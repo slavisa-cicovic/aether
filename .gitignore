@@ -14,3 +14,4 @@ services/*/.settings/
 # Application configs (exclude sensitive)
 services/*/application.yml
 services/*/application-local.yml
+.java-version
