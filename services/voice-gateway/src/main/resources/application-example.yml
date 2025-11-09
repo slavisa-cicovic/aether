@@ -1,0 +1,51 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /v1
+
+spring:
+  application:
+    name: aether-voice-gateway
+  datasource:
+    url: jdbc:mysql://${DB_HOST:prod-db.aethernet.com}:3306/aethernet_voice
+    username: UNAME
+    password: PWD
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: true
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+app:
+  auth:
+      mode: ${AUTH_MODE:DUMMY} # DUMMY, JWT, OAUTH2
+      dummy:
+        token: ${DUMMY_TOKEN:dummy-voice-agent-token}
+      jwt:
+        secret: ${JWT_SECRET:your-jwt-secret-key}
+        issuer: ${JWT_ISSUER:aether-voice-gateway}
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - [%X{transactionId}] - %msg%n"
+  level:
+    com.aethernet.voicegateway: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
+
+springdoc:
+  api-docs:
+    path: /api-docs  # Sada će biti /v1/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /v1/api-docs  # 👈 OVO JE KLJUČNO!
+    config-url: /v1/api-docs/swagger-config
+    urls:
+      - url: /v1/api-docs
+        name: AetherVoice API
