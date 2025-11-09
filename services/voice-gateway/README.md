@@ -43,7 +43,7 @@ X-Transaction-ID: <uuid_for_tracing>
 {
   "session_id": "sess_abc123def456",
   "status": "active",
-  "welcome_message": "Dobrodošli u AetherNet. Da li želite da naručite novu dostavu?"
+  "welcome_message": "Welcome to AetherNet. Do you want to order a new delivery?"
 }
 ```
 
@@ -71,14 +71,14 @@ X-Transaction-ID: <uuid_for_tracing>
     "longitude": 20.4612
   },
   "confidence_score": 0.95,
-  "response_message": "Hvala. Šta želite da naručite i od koga?"
+  "response_message": "Thank you. What do you want to order and from whom?"
 }
 ```
 * **Possible Error Response (422 Unprocessable Entity):**
 ```json
 {
   "error_code": "ADDRESS_AMBIGUOUS",
-  "message": "Našao sam više adresa. Da li ste mislili na Bulevar Kralja Aleksandra 123 ili Bulevar Kralja Aleksandra 123a?",
+  "message": "I found more addresses. Did you mean Bulevar Kralja Aleksandra 123 or Bulevar Kralja Aleksandra 123a?",
   "suggestions": ["Bulevar Kralja Aleksandra 123", "Bulevar Kralja Aleksandra 123a"]
 }
 ```
@@ -94,8 +94,8 @@ X-Transaction-ID: <uuid_for_tracing>
 {
   "merchant_name": "Bistro Slavija",
   "items": [
-    {"name": "kafa", "quantity": 2},
-    {"name": "sendvič sa šunkom", "quantity": 1}
+    {"name": "coffee", "quantity": 2},
+    {"name": "ham sandwich", "quantity": 1}
   ]
 }
 ```
@@ -106,14 +106,14 @@ X-Transaction-ID: <uuid_for_tracing>
   "merchant_name": "Bistro Slavija",
   "is_available": true,
   "estimated_preparation_time": 15,
-  "response_message": "Odličan izbor. Kada želite da vam dostavimo? Odmah ili određeno vreme?"
+  "response_message": "Excellent choice. When do you want us to deliver? Immediately or for a certain time?"
 }
 ```
 * **Error Response (404 Not Found):**
 ```json
 {
   "error_code": "MERCHANT_NOT_FOUND",
-  "message": "Izvinite, 'Bistro Slavija' trenutno nema dostupne dronove. Da li želite da vidimo druge bistroe u vašoj blizini?",
+  "message": "Sorry, 'Bistro Slavija' currently has no drones available. Do you want us to see other bistros near you?",
   "alternative_merchants": [
     {"id": "merch_456abc", "name": "Bistro Moskva", "distance_km": 0.8},
     {"id": "merch_123def", "name": "Cafe Drina", "distance_km": 1.2}
@@ -144,14 +144,14 @@ X-Transaction-ID: <uuid_for_tracing>
     "total": 850.00
   },
   "currency": "RSD",
-  "response_message": "Vaša dostava će stići za 25 minuta. Ukupna cena je 850 dinara, uključujući dostavu. Da li potvrđujete narudžbinu?"
+  "response_message": "Your delivery will arrive in 25 minutes. The total price is 850 dinars, including delivery. Are you confirming the order?"
 }
 ```
 * **Error Response (503 Service Unavailable):**
 ```json
 {
   "error_code": "NO_DRONES_AVAILABLE",
-  "message": "Izvinite, trenutno nemamo dostupne dronove u vašoj zoni. Molimo pokušajte za 15 minuta."
+  "message": "Sorry, we currently have no drones available in your area. Please try in 15 minutes."
 }
 ```
 
@@ -174,7 +174,7 @@ X-Transaction-ID: <uuid_for_tracing>
   "order_id": "order_aeth789012",
   "status": "pending_payment",
   "payment_intent_id": "pi_abc123",
-  "response_message": "Hvala. Kako želite da platite? Karticom preko telefona ili novčanikom u aplikaciji?"
+  "response_message": "Thank you. How do you want to pay? With a card over the phone or an in-app wallet?"
 }
 ```
 
@@ -199,7 +199,7 @@ X-Transaction-ID: <uuid_for_tracing>
   "payment_status": "succeeded",
   "order_id": "order_aeth789012", 
   "tracking_url": "https://track.aethernet.com/order_aeth789012",
-  "response_message": "Vaša narudžbina je prihvaćena! Broj vaše pošiljke je AETH-789-012. Dron će krenuti uskoro. Pratite njegov let putem SMS linka koji ćete dobiti. Hvala što koristite AetherNet!"
+  "response_message": "Your order has been accepted! Your shipment number is AETH-789-012. The drone will be on its way soon. Track his flight via the SMS link you will receive. Thanks for using AetherNet!"
 }
 ```
 
