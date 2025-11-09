@@ -1,12 +1,21 @@
-REST API koji će glasovni agent koristiti da komunicira sa backend sistemom. Ovo je ključno za razumevanje integracionih tački.
+```markdown
+# AetherVoice Gateway
+
+Backend service for AetherNet voice agent - part of the Aether drone delivery platform.
+
+> 🔗 **Part of**: [Aether Monorepo](../../)
+
+## 🎯 Purpose
+
+REST API that voice agents use to communicate with the backend system. This is crucial for understanding integration points.
 
 ---
 
-### **REST API Specifikacija za AetherNet Glasovni Agent**
+## **REST API Specification for AetherNet Voice Agent**
 
-**Bazni URL:** `https://api.aethernet.com/v1`
+**Base URL:** `https://api.aethernet.com/v1`
 
-**Zajednički Zaglavlja (Common Headers):**
+**Common Headers:**
 ```http
 Content-Type: application/json
 Authorization: Bearer <voice_agent_jwt_token>
@@ -15,17 +24,17 @@ X-Transaction-ID: <uuid_for_tracing>
 
 ---
 
-### **1. API: Inicijalizacija Sesije Narudžbine**
+### **1. API: Order Session Initialization**
 
-**Svaki poziv glasovnog agenta počinje ovim API-jem kako bi se započela sesija narudžbine.**
+**Every voice agent call starts with this API to begin an order session.**
 
 * **Endpoint:** `POST /voice/sessions`
-* **Opis:** Kreira novu sesiju narudžbine i vraća Session ID koji se koristi u svim narednim pozivima.
+* **Description:** Creates a new order session and returns a Session ID used in all subsequent calls.
 * **Request Body:**
 ```json
 {
   "user_phone_number": "+381641234567",
-  "call_sid": "CA1234567890abcdef", // Unique ID od telekom operatora
+  "call_sid": "CA1234567890abcdef", // Unique ID from telecom operator
   "language": "sr-Latn"
 }
 ```
@@ -40,10 +49,10 @@ X-Transaction-ID: <uuid_for_tracing>
 
 ---
 
-### **2. API: Verifikacija i Provera Adrese**
+### **2. API: Address Verification**
 
 * **Endpoint:** `POST /voice/sessions/{session_id}/verify-address`
-* **Opis:** Proverava i geokodira adresu koju je korisnik izgovorio.
+* **Description:** Verifies and geocodes the address spoken by the user.
 * **Request Body:**
 ```json
 {
@@ -65,7 +74,7 @@ X-Transaction-ID: <uuid_for_tracing>
   "response_message": "Hvala. Šta želite da naručite i od koga?"
 }
 ```
-* **Mogući Error Response (422 Unprocessable Entity):**
+* **Possible Error Response (422 Unprocessable Entity):**
 ```json
 {
   "error_code": "ADDRESS_AMBIGUOUS",
@@ -76,10 +85,10 @@ X-Transaction-ID: <uuid_for_tracing>
 
 ---
 
-### **3. API: Provera Dostupnosti Pošiljaoca**
+### **3. API: Merchant Availability Check**
 
 * **Endpoint:** `POST /voice/sessions/{session_id}/verify-merchant`
-* **Opis:** Proverava da li pošiljalac postoji u bazi i da li je dostupan za dostavu.
+* **Description:** Checks if the merchant exists in the database and is available for delivery.
 * **Request Body:**
 ```json
 {
@@ -114,14 +123,14 @@ X-Transaction-ID: <uuid_for_tracing>
 
 ---
 
-### **4. API: Provera Dostupnosti i Kalkulacija Cene**
+### **4. API: Availability Check and Price Calculation**
 
 * **Endpoint:** `POST /voice/sessions/{session_id}/calculate-quote`
-* **Opis:** Proverava dostupnost dronova i računa ukupnu cenu dostave.
+* **Description:** Checks drone availability and calculates total delivery price.
 * **Request Body:**
 ```json
 {
-  "delivery_time_type": "now", // ili "scheduled" sa "scheduled_time": "2024-01-15T18:30:00Z"
+  "delivery_time_type": "now", // or "scheduled" with "scheduled_time": "2024-01-15T18:30:00Z"
 }
 ```
 * **Response (200 OK):**
@@ -148,15 +157,15 @@ X-Transaction-ID: <uuid_for_tracing>
 
 ---
 
-### **5. API: Potvrda i Kreiranje Narudžbine**
+### **5. API: Order Confirmation and Creation**
 
 * **Endpoint:** `POST /voice/sessions/{session_id}/confirm-order`
-* **Opis:** Finalizira narudžbinu i kreira je u sistemu.
+* **Description:** Finalizes the order and creates it in the system.
 * **Request Body:**
 ```json
 {
   "user_confirmed": true,
-  "payment_method": "card" // ili "wallet"
+  "payment_method": "card" // or "wallet"
 }
 ```
 * **Response (201 Created):**
@@ -171,16 +180,16 @@ X-Transaction-ID: <uuid_for_tracing>
 
 ---
 
-### **6. API: Obrada Plaćanja**
+### **6. API: Payment Processing**
 
 * **Endpoint:** `POST /voice/sessions/{session_id}/process-payment`
-* **Opis:** Procesira plaćanje nakon što korisnik izabere način plaćanja.
+* **Description:** Processes payment after the user selects payment method.
 * **Request Body:**
 ```json
 {
   "payment_method": "card",
   "payment_details": {
-    "token": "tok_visa_123abc" // tokenizirani podaci o kartici
+    "token": "tok_visa_123abc" // tokenized card data
   }
 }
 ```
@@ -196,14 +205,14 @@ X-Transaction-ID: <uuid_for_tracing>
 
 ---
 
-### **7. API: Otkazivanje Sesije**
+### **7. API: Session Cancellation**
 
 * **Endpoint:** `POST /voice/sessions/{session_id}/cancel`
-* **Opis:** Koristi se ako korisnik otkaže narudžbinu ili se poziv prekine.
+* **Description:** Used if the user cancels the order or the call ends.
 * **Request Body:**
 ```json
 {
-  "reason": "user_cancelled" // ili "call_ended", "timeout"
+  "reason": "user_cancelled" // or "call_ended", "timeout"
 }
 ```
 * **Response (200 OK):**
@@ -216,7 +225,7 @@ X-Transaction-ID: <uuid_for_tracing>
 
 ---
 
-### **Dijagram Sekvence Poziva (Sequence Diagram)**
+### **Call Sequence Diagram**
 
 ```
 [Voice Agent]            [AetherNet Backend]
@@ -253,4 +262,50 @@ X-Transaction-ID: <uuid_for_tracing>
      |                             |
 ```
 
-Ovi API-jevsi obezbeduju čvrstu podlogu za integraciju glasovnog agenta sa backend sistemom. Svaki endpoint je dizajniran da bude idempotentan gde je to moguće i vraća jasne poruke za korisnika koje agent može direktno da koristi.
+These APIs provide a solid foundation for integrating voice agents with the backend system. Each endpoint is designed to be idempotent where possible and returns clear user messages that the agent can use directly.
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# From the voice-gateway directory
+cd services/voice-gateway
+
+# Run the application
+./mvnw spring-boot:run
+
+# Or with profile
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+
+# Access APIs
+http://localhost:8080/v1/health
+http://localhost:8080/v1/swagger-ui/index.html
+```
+
+## 🏗 Architecture
+
+```
+Voice Agent → AetherVoice Gateway → MySQL
+                    ↓
+            (Future) User Management
+                    ↓  
+            (Future) Drone Orchestrator
+```
+
+## 🔧 Configuration
+
+See [configuration guide](./docs/configuration.md) for environment setup.
+
+## 🧪 Testing
+
+```bash
+# Unit tests
+./mvnw test
+
+# Integration tests  
+./mvnw verify
+```
+
+## 👥 Team
+
