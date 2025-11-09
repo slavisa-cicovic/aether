@@ -1,0 +1,16 @@
+.history
+
+# Java
+services/*/target/
+services/*/.classpath
+services/*/.project
+services/*/.settings/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Application configs (exclude sensitive)
+services/*/application.yml
+services/*/application-local.yml
