@@ -37,7 +37,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/voice/sessions")
-@Tag(name = "Voice Sessions", description = "API za upravljanje glasovnim sesijama narudžbina")
+@Tag(name = "Voice Sessions", description = "API for managing voice order sessions")
 @SecurityRequirement(name = "bearerAuth")
 public class VoiceSessionController {
     
@@ -45,37 +45,37 @@ public class VoiceSessionController {
     private VoiceSessionService voiceSessionService;
     
     @Operation(
-        summary = "Kreiranje sesije",
-        description = "Kreira novu glasovnu sesiju za narudžbinu. Ovo je prvi korak u procesu naručivanja."
+        summary = "Create session",
+        description = "Creates a new voice session for order placement. This is the first step in the ordering process."
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "201", 
-            description = "Sesija uspešno kreirana",
+            description = "Session successfully created",
             content = @Content(schema = @Schema(implementation = SessionResponse.class))
         ),
         @ApiResponse(
             responseCode = "400", 
-            description = "Nevažeći podaci zahteva",
+            description = "Invalid request data",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         ),
         @ApiResponse(
             responseCode = "409", 
-            description = "Već postoji aktivna sesija za ovaj poziv",
+            description = "Active session already exists for this call",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         ),
         @ApiResponse(
             responseCode = "401", 
-            description = "Neautorizovani pristup",
+            description = "Unauthorized access",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping
     public ResponseEntity<SessionResponse> createSession(
-            @Parameter(description = "Podaci za kreiranje sesije", required = true)
+            @Parameter(description = "Session creation data", required = true)
             @Valid @RequestBody SessionCreateRequest request,
             
-            @Parameter(description = "Jedinstveni ID transakcije za praćenje", required = true)
+            @Parameter(description = "Unique transaction ID for tracking", required = true)
             @RequestHeader("X-Transaction-ID") String transactionId) {
         
         SessionResponse response = voiceSessionService.createSession(request, transactionId);
@@ -83,35 +83,35 @@ public class VoiceSessionController {
     }
     
     @Operation(
-        summary = "Verifikacija adrese",
-        description = "Proverava i geokodira adresu koju je korisnik izgovorio tokom poziva."
+        summary = "Verify address",
+        description = "Verifies and geocodes the address spoken by the user during the call."
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", 
-            description = "Adresa uspešno verifikovana",
+            description = "Address successfully verified",
             content = @Content(schema = @Schema(implementation = AddressVerificationResponse.class))
         ),
         @ApiResponse(
             responseCode = "422", 
-            description = "Adresa je nejasna - potrebna dodatna potvrda",
+            description = "Address is ambiguous - additional confirmation required",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Sesija nije pronađena",
+            description = "Session not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping("/{sessionId}/verify-address")
     public ResponseEntity<?> verifyAddress(
-            @Parameter(description = "ID sesije", required = true, example = "sess_abc123def456")
+            @Parameter(description = "Session ID", required = true, example = "sess_abc123def456")
             @PathVariable String sessionId,
             
-            @Parameter(description = "Izgovorena adresa za verifikaciju", required = true)
+            @Parameter(description = "Spoken address for verification", required = true)
             @Valid @RequestBody AddressVerificationRequest request,
             
-            @Parameter(description = "Jedinstveni ID transakcije za praćenje", required = true)
+            @Parameter(description = "Unique transaction ID for tracking", required = true)
             @RequestHeader("X-Transaction-ID") String transactionId) {
         
         AddressVerificationResponse response = voiceSessionService.verifyAddress(sessionId, request);
@@ -119,30 +119,30 @@ public class VoiceSessionController {
     }
     
     @Operation(
-        summary = "Verifikacija pošiljaoca",
-        description = "Proverava da li pošiljalac postoji u bazi i da li je dostupan za dostavu."
+        summary = "Verify merchant",
+        description = "Checks if the merchant exists in the database and is available for delivery."
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", 
-            description = "Pošiljalac uspešno verifikovan",
+            description = "Merchant successfully verified",
             content = @Content(schema = @Schema(implementation = MerchantVerificationResponse.class))
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Pošiljalac nije pronađen - predloženi alternativni pošiljaoci",
+            description = "Merchant not found - suggested alternative merchants",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping("/{sessionId}/verify-merchant")
     public ResponseEntity<?> verifyMerchant(
-            @Parameter(description = "ID sesije", required = true)
+            @Parameter(description = "Session ID", required = true)
             @PathVariable String sessionId,
             
-            @Parameter(description = "Podaci o pošiljaocu i naručenim stavkama", required = true)
+            @Parameter(description = "Merchant data and ordered items", required = true)
             @Valid @RequestBody MerchantVerificationRequest request,
             
-            @Parameter(description = "Jedinstveni ID transakcije za praćenje", required = true)
+            @Parameter(description = "Unique transaction ID for tracking", required = true)
             @RequestHeader("X-Transaction-ID") String transactionId) {
         
         MerchantVerificationResponse response = voiceSessionService.verifyMerchant(sessionId, request);
@@ -150,30 +150,30 @@ public class VoiceSessionController {
     }
     
     @Operation(
-        summary = "Kalkulacija cene dostave",
-        description = "Proverava dostupnost dronova i računa ukupnu cenu dostave."
+        summary = "Calculate delivery quote",
+        description = "Checks drone availability and calculates total delivery price."
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", 
-            description = "Cena uspešno izračunata",
+            description = "Price successfully calculated",
             content = @Content(schema = @Schema(implementation = QuoteResponse.class))
         ),
         @ApiResponse(
             responseCode = "503", 
-            description = "Nema dostupnih dronova u zoni",
+            description = "No drones available in the zone",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping("/{sessionId}/calculate-quote")
     public ResponseEntity<?> calculateQuote(
-            @Parameter(description = "ID sesije", required = true)
+            @Parameter(description = "Session ID", required = true)
             @PathVariable String sessionId,
             
-            @Parameter(description = "Podaci o vremenu dostave", required = true)
+            @Parameter(description = "Delivery time data", required = true)
             @Valid @RequestBody QuoteRequest request,
             
-            @Parameter(description = "Jedinstveni ID transakcije za praćenje", required = true)
+            @Parameter(description = "Unique transaction ID for tracking", required = true)
             @RequestHeader("X-Transaction-ID") String transactionId) {
         
         QuoteResponse response = voiceSessionService.calculateQuote(sessionId, request);
@@ -181,30 +181,30 @@ public class VoiceSessionController {
     }
     
     @Operation(
-        summary = "Potvrda narudžbine",
-        description = "Finalizira narudžbinu i kreira je u sistemu. Menja status sesije na 'order_confirmed'."
+        summary = "Confirm order",
+        description = "Finalizes the order and creates it in the system. Changes session status to 'order_confirmed'."
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "201", 
-            description = "Narudžbina uspešno potvrđena",
+            description = "Order successfully confirmed",
             content = @Content(schema = @Schema(implementation = OrderConfirmationResponse.class))
         ),
         @ApiResponse(
             responseCode = "400", 
-            description = "Korisnik nije potvrdio narudžbinu ili sesija nije aktivna",
+            description = "User did not confirm the order or session is not active",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping("/{sessionId}/confirm-order")
     public ResponseEntity<?> confirmOrder(
-            @Parameter(description = "ID sesije", required = true)
+            @Parameter(description = "Session ID", required = true)
             @PathVariable String sessionId,
             
-            @Parameter(description = "Potvrda narudžbine i način plaćanja", required = true)
+            @Parameter(description = "Order confirmation and payment method", required = true)
             @Valid @RequestBody OrderConfirmationRequest request,
             
-            @Parameter(description = "Jedinstveni ID transakcije za praćenje", required = true)
+            @Parameter(description = "Unique transaction ID for tracking", required = true)
             @RequestHeader("X-Transaction-ID") String transactionId) {
         
         OrderConfirmationResponse response = voiceSessionService.confirmOrder(sessionId, request);
@@ -212,30 +212,30 @@ public class VoiceSessionController {
     }
     
     @Operation(
-        summary = "Procesiranje plaćanja",
-        description = "Procesira plaćanje nakon što je narudžbina potvrđena. Menja status sesije na 'completed'."
+        summary = "Process payment",
+        description = "Processes payment after the order is confirmed. Changes session status to 'completed'."
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", 
-            description = "Plaćanje uspešno procesirano",
+            description = "Payment successfully processed",
             content = @Content(schema = @Schema(implementation = PaymentResponse.class))
         ),
         @ApiResponse(
             responseCode = "400", 
-            description = "Greška pri procesiranju plaćanja ili narudžbina nije potvrđena",
+            description = "Payment processing error or order not confirmed",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping("/{sessionId}/process-payment")
     public ResponseEntity<?> processPayment(
-            @Parameter(description = "ID sesije", required = true)
+            @Parameter(description = "Session ID", required = true)
             @PathVariable String sessionId,
             
-            @Parameter(description = "Podaci o plaćanju", required = true)
+            @Parameter(description = "Payment data", required = true)
             @Valid @RequestBody PaymentRequest request,
             
-            @Parameter(description = "Jedinstveni ID transakcije za praćenje", required = true)
+            @Parameter(description = "Unique transaction ID for tracking", required = true)
             @RequestHeader("X-Transaction-ID") String transactionId) {
         
         PaymentResponse response = voiceSessionService.processPayment(sessionId, request);
@@ -243,34 +243,34 @@ public class VoiceSessionController {
     }
     
     @Operation(
-        summary = "Otkazivanje sesije",
-        description = "Otkazuje sesiju narudžbine. Koristi se ako korisnik otkaže narudžbinu ili se poziv prekine."
+        summary = "Cancel session",
+        description = "Cancels the order session. Used if the user cancels the order or the call ends."
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", 
-            description = "Sesija uspešno otkazana"
+            description = "Session successfully cancelled"
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Sesija nije pronađena"
+            description = "Session not found"
         )
     })
     @PostMapping("/{sessionId}/cancel")
     public ResponseEntity<?> cancelSession(
-            @Parameter(description = "ID sesije", required = true)
+            @Parameter(description = "Session ID", required = true)
             @PathVariable String sessionId,
             
-            @Parameter(description = "Razlog otkazivanja", required = true)
+            @Parameter(description = "Cancellation reason", required = true)
             @Valid @RequestBody CancelRequest request,
             
-            @Parameter(description = "Jedinstveni ID transakcije za praćenje", required = true)
+            @Parameter(description = "Unique transaction ID for tracking", required = true)
             @RequestHeader("X-Transaction-ID") String transactionId) {
         
         voiceSessionService.cancelSession(sessionId, request);
         return ResponseEntity.ok(new CancelResponse("cancelled", "Session cancelled successfully"));
     }
     
-    // Helper DTO za cancel response
+    // Helper DTO for cancel response
     public record CancelResponse(String sessionStatus, String message) {}
 }
