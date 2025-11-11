@@ -13,18 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aethernet.voicegateway.service.AnalyticsService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/analytics")
-@Tag(name = "Analytics", description = "API za analytics i reporting")
+@Tag(name = "Analytics", description = "API for analytics and reporting")
 @SecurityRequirement(name = "bearerAuth")
 public class AnalyticsController {
     
     @Autowired
     private AnalyticsService analyticsService;
     
+    @Operation(
+        summary = "Get session analytics",
+        description = "Returns analytics data for voice sessions within the specified date range"
+    )
     @GetMapping("/sessions")
     public ResponseEntity<Map<String, Object>> getSessionAnalytics(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
@@ -42,6 +47,10 @@ public class AnalyticsController {
         return ResponseEntity.ok(analytics);
     }
     
+    @Operation(
+        summary = "Get daily metrics", 
+        description = "Returns daily success rates and session metrics"
+    )
     @GetMapping("/daily")
     public ResponseEntity<Map<String, Object>> getDailyMetrics() {
         Map<String, Object> metrics = analyticsService.getDailyMetrics();
