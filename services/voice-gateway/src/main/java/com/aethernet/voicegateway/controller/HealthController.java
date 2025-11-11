@@ -9,12 +9,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "Health", description = "Health check i monitoring endpoints")
+@Tag(name = "Health", description = "Health check and monitoring endpoints")
 public class HealthController {
     
     @Operation(
         summary = "Health check",
-        description = "Proverava da li je servis pokrenut i responsive. Ne zahteva autentifikaciju."
+        description = "Checks if the service is running and responsive. Does not require authentication."
     )
     @GetMapping("/health")
     public Map<String, String> health() {
@@ -23,7 +23,7 @@ public class HealthController {
     
     @Operation(
         summary = "Service info", 
-        description = "Vraća osnovne informacije o servisu. Ne zahteva autentifikaciju."
+        description = "Returns basic information about the service. Does not require authentication."
     )
     @GetMapping("/info")
     public Map<String, Object> info() {
