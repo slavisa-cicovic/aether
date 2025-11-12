@@ -19,71 +19,74 @@ import com.aethernet.voicegateway.config.converters.PaymentRequestMethodConverte
 import com.aethernet.voicegateway.config.interceptors.RequestLoggingInterceptor;
 import com.aethernet.voicegateway.config.interceptors.TransactionIdInterceptor;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private DeliveryTimeTypeConverter deliveryTimeTypeConverter;
+        @Autowired
+        private DeliveryTimeTypeConverter deliveryTimeTypeConverter;
 
-    @Autowired
-    private PaymentMethodConverter paymentMethodConverter;
+        @Autowired
+        private PaymentMethodConverter paymentMethodConverter;
 
-    @Autowired
-    private PaymentRequestMethodConverter paymentRequestMethodConverter;
+        @Autowired
+        private PaymentRequestMethodConverter paymentRequestMethodConverter;
 
-    @Autowired
-    private CancelReasonConverter cancelReasonConverter;
+        @Autowired
+        private CancelReasonConverter cancelReasonConverter;
+        @Autowired
+        private CorsProperties corsProperties;
 
-    @Override
-    public void addCorsMappings(@NonNull CorsRegistry registry) {
-        registry.addMapping("/v1/**")
-                .allowedOrigins(
-                        "http://localhost:3000", // React dev server
-                        "https://app.aethernet.com", // Production frontend
-                        "https://staging.aethernet.com" // Staging frontend
-                )
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .exposedHeaders(
-                        "X-Transaction-ID",
-                        "X-Session-ID",
-                        "X-Request-ID")
-                .allowCredentials(true)
-                .maxAge(3600); // 1 sat cache za preflight
-    }
+        @Override
+        public void addCorsMappings(@NonNull CorsRegistry registry) {
+                if (corsProperties.getAllowedOrigins() != null && !corsProperties.getAllowedOrigins().isEmpty()) {
 
-    @Override
-    public void addInterceptors(@NonNull InterceptorRegistry registry) {
-        // Logging interceptor za sve requestove
-        registry.addInterceptor(new RequestLoggingInterceptor())
-                .addPathPatterns("/v1/**")
-                .excludePathPatterns("/health", "/info");
+                        log.info(".................................................................Configuring CORS for origins: {}", corsProperties.getAllowedOrigins());
+       
+                        registry.addMapping("/v1/**")
+                                        .allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[0]))
+                                        .allowedMethods(corsProperties.getAllowedMethods().toArray(new String[0]))
+                                        .allowedHeaders(corsProperties.getAllowedHeaders().toArray(new String[0]))
+                                        .exposedHeaders(corsProperties.getExposedHeaders().toArray(new String[0]))
+                                        .allowCredentials(corsProperties.isAllowCredentials())
+                                        .maxAge(corsProperties.getMaxAge());
+                }
+        }
 
-        // Transaction ID validation interceptor
-        registry.addInterceptor(new TransactionIdInterceptor())
-                .addPathPatterns("/v1/voice/sessions/**");
-    }
+        @Override
+        public void addInterceptors(@NonNull InterceptorRegistry registry) {
+                // Logging interceptor za sve requestove
+                registry.addInterceptor(new RequestLoggingInterceptor())
+                                .addPathPatterns("/v1/**")
+                                .excludePathPatterns("/health", "/info");
 
-    @Override
-    public void configureMessageConverters(@NonNull List<HttpMessageConverter<?>> converters) {
-        // Spring Boot već konfiguriše osnovne message converters
-        // Ovo je mesto za custom converters ako su potrebni
-    }
+                // Transaction ID validation interceptor
+                registry.addInterceptor(new TransactionIdInterceptor())
+                                .addPathPatterns("/v1/voice/sessions/**");
+        }
 
-    @Override
-    public void addFormatters(@NonNull FormatterRegistry registry) {
-        registry.addConverter(deliveryTimeTypeConverter);
-        registry.addConverter(paymentMethodConverter);
-        registry.addConverter(paymentRequestMethodConverter);
-        registry.addConverter(cancelReasonConverter);
-    }
+        @Override
+        public void configureMessageConverters(@NonNull List<HttpMessageConverter<?>> converters) {
+                // Spring Boot već konfiguriše osnovne message converters
+                // Ovo je mesto za custom converters ako su potrebni
+        }
 
-    @Override
-    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/swagger-ui.html**")
-                .addResourceLocations("classpath:/META-INF/resources/");
+        @Override
+        public void addFormatters(@NonNull FormatterRegistry registry) {
+                registry.addConverter(deliveryTimeTypeConverter);
+                registry.addConverter(paymentMethodConverter);
+                registry.addConverter(paymentRequestMethodConverter);
+                registry.addConverter(cancelReasonConverter);
+        }
 
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-    }
+        @Override
+        public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+                registry.addResourceHandler("/swagger-ui.html**")
+                                .addResourceLocations("classpath:/META-INF/resources/");
+
+                registry.addResourceHandler("/webjars/**")
+                                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+        }
 }

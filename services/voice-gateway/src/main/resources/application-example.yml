@@ -30,6 +30,24 @@ app:
       jwt:
         secret: ${JWT_SECRET:your-jwt-secret-key}
         issuer: ${JWT_ISSUER:aether-voice-gateway}
+  cors:
+    allowed-origins:
+      - "http://localhost:3000" # react dev server
+      - "https://frontend.com"  # production frontend URL
+    allowed-methods:
+      - "GET"
+      - "POST" 
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+    allowed-headers:
+      - "*"
+    exposed-headers:
+      - "X-Transaction-ID"
+      - "X-Session-ID"
+      - "X-Request-ID"
+    allow-credentials: true
+    max-age: 3600
 
 logging:
   pattern:
