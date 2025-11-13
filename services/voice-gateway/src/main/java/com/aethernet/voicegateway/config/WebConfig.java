@@ -42,8 +42,6 @@ public class WebConfig implements WebMvcConfigurer {
         @Override
         public void addCorsMappings(@NonNull CorsRegistry registry) {
                 if (corsProperties.getAllowedOrigins() != null && !corsProperties.getAllowedOrigins().isEmpty()) {
-
-                        log.info(".................................................................Configuring CORS for origins: {}", corsProperties.getAllowedOrigins());
        
                         registry.addMapping("/v1/**")
                                         .allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[0]))
