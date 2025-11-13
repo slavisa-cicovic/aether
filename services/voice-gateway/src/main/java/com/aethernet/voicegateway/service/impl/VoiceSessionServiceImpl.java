@@ -77,14 +77,11 @@ public class VoiceSessionServiceImpl implements VoiceSessionService {
 
     @Override
     public AddressVerificationResponse verifyAddress(String sessionId, AddressVerificationRequest request) {
-        log.info("Verifying address for session: {}, address: {}", sessionId, request.getSpokenAddress());
         VoiceSession session = getSessionOrThrow(sessionId);
         validateSessionIsActive(session);
 
-        // Simulacija address verification logike
         String spokenAddress = request.getSpokenAddress();
 
-        // Provera za ambiguous address
         if (spokenAddress.toLowerCase().contains("123") && !spokenAddress.contains("123 ")) {
             throw new AddressVerificationException(
                     "Našao sam više adresa. Da li ste mislili na Bulevar Kralja Aleksandra 123 ili Bulevar Kralja Aleksandra 123a?",
@@ -92,7 +89,6 @@ public class VoiceSessionServiceImpl implements VoiceSessionService {
                     List.of("Bulevar Kralja Aleksandra 123", "Bulevar Kralja Aleksandra 123a"));
         }
 
-        // Simulacija uspešne verifikacije
         AddressVerificationResponse.VerifiedAddress verifiedAddress = new AddressVerificationResponse.VerifiedAddress(
                 "Bulevar Kralja Aleksandra 123",
                 "stan 5",

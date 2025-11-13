@@ -10,7 +10,7 @@ import lombok.Data;
 public class SessionCreateRequest {
     
      @Schema(
-        description = "Broj telefona korisnika u E.164 formatu",
+        description = "User phone number u E.164 formatu",
         example = "+381641234567",
         required = true
     )
