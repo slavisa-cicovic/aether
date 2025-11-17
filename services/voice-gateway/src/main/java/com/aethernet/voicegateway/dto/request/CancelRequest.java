@@ -3,27 +3,15 @@ package com.aethernet.voicegateway.dto.request;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class CancelRequest {
     
     @NotNull(message = "Cancel reason is required")
     private CancelReason reason;
     
     private String description;
-    
-    // Constructors
-    public CancelRequest() {}
-    
-    public CancelRequest(CancelReason reason) {
-        this.reason = reason;
-    }
-    
-    // Getters and Setters
-    public CancelReason getReason() { return reason; }
-    public void setReason(CancelReason reason) { this.reason = reason; }
-    
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
     
     // Enum for cancel reasons
     public enum CancelReason {

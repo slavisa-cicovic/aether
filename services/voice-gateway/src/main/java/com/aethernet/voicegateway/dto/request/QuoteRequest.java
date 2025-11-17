@@ -1,11 +1,14 @@
 package com.aethernet.voicegateway.dto.request;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import lombok.Data;
 
+@Data
 public class QuoteRequest {
     
     @NotNull(message = "Delivery time type is required")
@@ -13,25 +16,6 @@ public class QuoteRequest {
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime scheduledTime;
-    
-    // Constructors
-    public QuoteRequest() {}
-    
-    public QuoteRequest(DeliveryTimeType deliveryTimeType) {
-        this.deliveryTimeType = deliveryTimeType;
-    }
-    
-     public QuoteRequest(DeliveryTimeType deliveryTimeType, LocalDateTime scheduledTime) {
-        this.deliveryTimeType = deliveryTimeType;
-        this.scheduledTime = scheduledTime;
-    }
-    
-    // Getters and Setters
-    public DeliveryTimeType getDeliveryTimeType() { return deliveryTimeType; }
-    public void setDeliveryTimeType(DeliveryTimeType deliveryTimeType) { this.deliveryTimeType = deliveryTimeType; }
-    
-    public LocalDateTime getScheduledTime() { return scheduledTime; }
-    public void setScheduledTime(LocalDateTime scheduledTime) { this.scheduledTime = scheduledTime; }
     
 
     // Enum for delivery time types

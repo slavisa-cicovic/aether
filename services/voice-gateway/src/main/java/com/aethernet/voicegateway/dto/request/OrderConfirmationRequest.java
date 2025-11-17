@@ -3,7 +3,9 @@ package com.aethernet.voicegateway.dto.request;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class OrderConfirmationRequest {
     
     @NotNull(message = "User confirmation is required")
@@ -11,20 +13,6 @@ public class OrderConfirmationRequest {
     
     private PaymentMethod paymentMethod;
     
-    // Constructors
-    public OrderConfirmationRequest() {}
-    
-    public OrderConfirmationRequest(Boolean userConfirmed, PaymentMethod paymentMethod) {
-        this.userConfirmed = userConfirmed;
-        this.paymentMethod = paymentMethod;
-    }
-    
-    // Getters and Setters
-    public Boolean getUserConfirmed() { return userConfirmed; }
-    public void setUserConfirmed(Boolean userConfirmed) { this.userConfirmed = userConfirmed; }
-    
-    public PaymentMethod getPaymentMethod() { return paymentMethod; }
-    public void setPaymentMethod(PaymentMethod paymentMethod) { this.paymentMethod = paymentMethod; }
     
     // Enum for payment methods
     public enum PaymentMethod {

@@ -39,10 +39,11 @@ public class WebConfig implements WebMvcConfigurer {
         @Autowired
         private CorsProperties corsProperties;
 
+        @SuppressWarnings("null")
         @Override
         public void addCorsMappings(@NonNull CorsRegistry registry) {
                 if (corsProperties.getAllowedOrigins() != null && !corsProperties.getAllowedOrigins().isEmpty()) {
-       
+
                         registry.addMapping("/v1/**")
                                         .allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[0]))
                                         .allowedMethods(corsProperties.getAllowedMethods().toArray(new String[0]))
@@ -71,6 +72,7 @@ public class WebConfig implements WebMvcConfigurer {
                 // Ovo je mesto za custom converters ako su potrebni
         }
 
+        @SuppressWarnings("null")
         @Override
         public void addFormatters(@NonNull FormatterRegistry registry) {
                 registry.addConverter(deliveryTimeTypeConverter);
