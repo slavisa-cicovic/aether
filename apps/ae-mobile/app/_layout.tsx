@@ -1,47 +1,24 @@
-// app/_layout.tsx
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
-import { useEffect } from 'react';
-import { authService } from '../src/services/authService';
+import { StatusBar } from 'expo-status-bar';
+import 'react-native-reanimated';
+
+import { useColorScheme } from '@src/hooks/useColorScheme';
+
+export const unstable_settings = {
+  anchor: '(tabs)',
+};
 
 export default function RootLayout() {
-  useEffect(() => {
-    // Proveri auth status pri pokretanju app
-    authService.isAuthenticated().then(isAuth => {
-      console.log('Auth status:', isAuth);
-    });
-  }, []);
+  const colorScheme = useColorScheme();
 
   return (
-    <Stack screenOptions={{
-      headerStyle: {
-        backgroundColor: '#667eea',
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
-    }}>
-      <Stack.Screen 
-        name="index" 
-        options={{ 
-          title: 'AetherMobile Login',
-          headerShown: false 
-        }} 
-      />
-      <Stack.Screen 
-        name="login" 
-        options={{ 
-          title: 'Login',
-          headerShown: false 
-        }} 
-      />
-      <Stack.Screen 
-        name="dashboard" 
-        options={{ 
-          title: 'AetherMobile Dashboard',
-          headerBackVisible: false
-        }} 
-      />
-    </Stack>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
   );
 }

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import Constants from "expo-constants";
 import { camelToSnake, snakeToCamel } from "./transformers";
 
@@ -6,13 +6,14 @@ function resolveBaseUrl(): string {
   const debuggerHost =
     Constants.expoConfig?.hostUri ||
     Constants.manifest2?.extra?.expoGo?.developer?.hostUri;
+
   if (debuggerHost) {
-    // Primer: "192.168.10.148:8081" → uzmi samo IP
+    // Example: "192.168.10.148:8081" → take only IP
     const host = debuggerHost.split(":")[0];
     return `http://${host}:8080`;
   }
 
-  // Fallback za production build (nema Expo dev servera)
+  // Fallback for production build (no Expo dev server)
   return "https://app.aethernet.com";
 }
 
@@ -27,62 +28,92 @@ const axiosInstance: AxiosInstance = axios.create({
   },
 });
 
-// Request interceptor
+// ----- Request / Response logging -----
+
 axiosInstance.interceptors.request.use(
   config => {
-    console.log('🔍 AXIOS REQUEST DETAILS:', {
+    console.log("🔍 AXIOS REQUEST:", {
+      url: config.url,
       method: config.method,
+      baseURL: config.baseURL,
+      params: config.params,
       data: config.data,
-      headers: JSON.stringify(config.headers),
-      hasData: !!config.data,
-      dataType: typeof config.data,
-      dataKeys: config.data ? Object.keys(config.data) : 'no data'
+      headers: config.headers,
     });
     return config;
   },
   error => Promise.reject(error)
 );
 
-// Response interceptor
 axiosInstance.interceptors.response.use(
-  (response) => {
-    console.log('✅ AXIOS RESPONSE:', response.status, response.data);
+  response => {
+    console.log("✅ AXIOS RESPONSE:", {
+      url: response.config.url,
+      status: response.status,
+      data: response.data,
+    });
     return response;
   },
-  (error) => {
-    console.error('❌ AXIOS ERROR DETAILS:', {
+  error => {
+    console.error("❌ AXIOS ERROR:", {
       url: error.config?.url,
       method: error.config?.method,
-      data: error.config?.data,
-      headers: error.config?.headers,
       status: error.response?.status,
-      responseData: error.response?.data
+      data: error.response?.data,
     });
     return Promise.reject(error);
   }
 );
 
+// ----- Auto camel ↔ snake transform -----
+
+// request: camelCase (frontend) → snake_case (backend)
+const origTransformRequest = axiosInstance.defaults.transformRequest ?? [];
+axiosInstance.defaults.transformRequest = [
+  (data: any, headers: any) => {
+    if (data == null) return data;
+    return camelToSnake(data);
+  },
+  ...(Array.isArray(origTransformRequest)
+    ? origTransformRequest
+    : [origTransformRequest]),
+];
+
+// response: snake_case (backend) → camelCase (frontend)
+const origTransformResponse = axiosInstance.defaults.transformResponse ?? [];
+axiosInstance.defaults.transformResponse = [
+  ...(Array.isArray(origTransformResponse)
+    ? origTransformResponse
+    : [origTransformResponse]),
+  (data: any) => {
+    if (data == null) return data;
+    return snakeToCamel(data);
+  },
+];
+
 export default axiosInstance;
 
 // ----------------------------------------------------------------------
 
-export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
-  const [url, config] = Array.isArray(args) ? args : [args];
+export const fetcher = async <T = any>(
+  args: string | [string, AxiosRequestConfig]
+): Promise<T> => {
+  const [url, config] = Array.isArray(args) ? args : [args, {}];
 
   const res = await axiosInstance({
     url,
-    method: config?.method || 'GET',
+    method: config?.method || "GET",
     data: config?.data,
     params: config?.params,
     headers: config?.headers,
   });
-  console.log("Response Data:", res.data);
-  return res.data;
+
+  return res.data as T;
 };
 
-export const postFetcher = async <T>(
-  url: string, 
-  data: any, 
+export const postFetcher = async <T = any>(
+  url: string,
+  data: any,
   options?: {
     urlParams?: Record<string, string>;
     authToken?: string;
@@ -92,26 +123,24 @@ export const postFetcher = async <T>(
   let finalUrl = url;
   if (options?.urlParams) {
     finalUrl = Object.entries(options.urlParams).reduce(
-      (url, [key, value]) => url.replace(`{${key}}`, value),
-      url
+      (u, [key, value]) => u.replace(`{${key}}`, value),
+      finalUrl
     );
   }
 
-  // Generate transaction ID and get auth token
-  const transactionId = `txn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const transactionId = `txn-${Date.now()}-${Math.random()
+    .toString(36)
+    .substr(2, 9)}`;
   const authToken = options?.authToken || "dummy-voice-agent-token";
 
   console.log(`🚀 POST ${finalUrl}`, { data, urlParams: options?.urlParams });
 
-  const response = await fetcher([finalUrl, {
-    method: 'POST',
-    data: camelToSnake(data),
+  const res = await axiosInstance.post(finalUrl, data, {
     headers: {
-      'Content-Type': 'application/json',
-      'X-Transaction-ID': transactionId,
-      'Authorization': `Bearer ${authToken}`,
+      "X-Transaction-ID": transactionId,
+      Authorization: `Bearer ${authToken}`,
     },
-  }]);
+  });
 
-  return snakeToCamel(response) as T;
+  return res.data as T;
 };

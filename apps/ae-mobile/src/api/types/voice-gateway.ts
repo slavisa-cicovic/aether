@@ -62,7 +62,83 @@ export interface MerchantVerificationResponse {
   estimatedPreparationTime: number;
   responseMessage: string;
 }
+// ========== CALCULATE QUOTA ==========
+export interface QuoteRequest {
+  deliveryTimeType: DeliveryTimeType;
+  scheduledTime?: string; // ISO string format: "2024-01-15T14:30:00Z"
+}
 
+export enum DeliveryTimeType {
+  NOW = "now",
+  SCHEDULED = "scheduled",
+}
+
+export interface QuoteResponse {
+  deliveryAvailable: boolean;
+  estimatedDeliveryMinutes?: number;
+  breakdown: PriceBreakdown;
+  currency: string;
+  responseMessage: string;
+}
+
+export interface PriceBreakdown {
+  itemsTotal: number;
+  deliveryFee: number;
+  total: number;
+}
+
+// ========== OrderConfirmation and Payment==========
+export interface OrderConfirmationRequest {
+  userConfirmed: boolean;
+  paymentMethod?: PaymentMethod;
+}
+
+export enum PaymentMethod {
+  CARD = "card",
+  WALLET = "wallet",
+}
+
+export interface PaymentRequest {
+  paymentMethod: PaymentMethod;
+  paymentDetails?: PaymentDetails;
+}
+
+export interface PaymentDetails {
+  token?: string;
+}
+
+export interface PaymentResponse {
+  paymentStatus: string;
+  orderId: string;
+  trackingUrl: string;
+  responseMessage: string;
+}
+
+export interface OrderConfirmationResponse {
+  orderId: string;
+  status: string;
+  paymentIntentId?: string;
+  responseMessage: string;
+}
+
+// ========== CANCEL ORDER ==========
+export interface CancelRequest {
+  reason: CancelReason;
+  description?: string;
+}
+
+export enum CancelReason {
+  USER_CANCELLED = "user_cancelled",
+  CALL_ENDED = "call_ended",
+  TIMEOUT = "timeout",
+  PAYMENT_FAILED = "payment_failed",
+  TECHNICAL_ISSUE = "technical_issue",
+}
+
+export interface CancelResponse {
+  sessionStatus: string;
+  message: string;
+}
 // ========== ERROR ==========
 export interface ErrorResponse {
   error: string;

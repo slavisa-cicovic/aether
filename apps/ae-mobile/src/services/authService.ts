@@ -3,22 +3,20 @@ import { AuthResponse, LoginCredentials } from "@src/api/types/auth";
 import { User } from "@src/api/types/user";
 
 
-// Fake delay za simulaciju API poziva
 const fakeDelay = (ms: number): Promise<void> =>
   new Promise(resolve => setTimeout(resolve, ms));
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      // Simuliramo API poziv sa delay-om
       await fakeDelay(1500);
 
-      // Fake validacija
       if (!credentials.email || !credentials.password) {
         throw new Error("Email and password are required");
       }
 
-      // Fake login logika - možeš je prilagoditi po potrebi
+      console.log("Logging in with credentials:", credentials);
+
       if (
         credentials.email === "demo@aether.com" &&
         credentials.password === "password"
