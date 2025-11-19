@@ -1,3 +1,4 @@
+import { isAxiosError } from "axios";
 import { create } from "zustand";
 
 import { LoginCredentials } from "@src/api/types/auth";
@@ -56,15 +57,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         loading: false,
         error: null,
       });
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = deriveAuthErrorMessage(error);
       set({
-        error:
-          error instanceof Error
-            ? error.message
-            : "Unable to log in at the moment.",
+        error: message,
         loading: false,
       });
-      throw error;
+      throw new Error(message);
     }
   },
 
@@ -79,3 +78,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   clearError: () => set({ error: null }),
 }));
+
+function deriveAuthErrorMessage(error: unknown): string {
+  if (isAxiosError(error)) {
+    const data = error.response?.data as Record<string, unknown> | undefined;
+    return (
+      (typeof data?.message === "string" && data.message) ||
+      (typeof data?.error === "string" && data.error) ||
+      (typeof data?.detail === "string" && data.detail) ||
+      error.message ||
+      "Authentication failed."
+    );
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return "Authentication failed.";
+}

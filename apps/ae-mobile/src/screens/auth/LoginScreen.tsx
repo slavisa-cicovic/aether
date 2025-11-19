@@ -16,8 +16,8 @@ import { useAuthStore } from "@src/state/authStore";
 export default function LoginScreen() {
   const router = useRouter();
   const { colors, spacing } = useTheme();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("user@local");
+  const [password, setPassword] = useState("admin");
   const [formError, setFormError] = useState<string | null>(null);
 
   const login = useAuthStore(state => state.login);

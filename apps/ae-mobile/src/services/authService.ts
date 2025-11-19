@@ -1,14 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { AuthResponse, LoginCredentials } from "@src/api/types/auth";
-import { USER_MANAGEMENT_API_BASE_URL } from "@src/constants/config";
 import { User } from "@src/api/types/user";
+import { USER_MANAGEMENT_API_BASE_URL } from "@src/constants/config";
+import userManagementClient from "@src/utils/userManagementClient";
 
 const ACCESS_TOKEN_KEY = "auth.accessToken";
 const REFRESH_TOKEN_KEY = "auth.refreshToken";
 const USER_KEY = "auth.user";
-
-const buildUrl = (path: string) => `${USER_MANAGEMENT_API_BASE_URL}${path}`;
 
 async function persistAuthData(data: AuthResponse): Promise<void> {
   await AsyncStorage.multiSet([
@@ -26,26 +25,13 @@ async function clearAuthStorage(): Promise<void> {
   ]);
 }
 
+const buildAuthUrl = (path: string) => `${USER_MANAGEMENT_API_BASE_URL}${path}`;
+
 async function request<T>(path: string, body: unknown): Promise<T> {
-  const response = await fetch(buildUrl(path), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
+  const response = await userManagementClient.post<T>(buildAuthUrl(path), body, {
+    baseURL: undefined,
   });
-
-  if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || "Authentication request failed");
-  }
-
-  const text = await response.text();
-  if (!text) {
-    return {} as T;
-  }
-
-  return JSON.parse(text) as T;
+  return response.data;
 }
 
 export const authService = {
