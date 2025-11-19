@@ -28,7 +28,7 @@ app:
     dummy:
       token: ${DUMMY_TOKEN:dummy-voice-agent-token}
     jwt:
-      secret: ${JWT_SECRET:CHANGEME_SECRET}
+      secret: ${JWT_SECRET:U3VwZXJTZWNyZXRLZXlGb3JBZXRoZXJOZXQhMjM0NTY3OA==}
       issuer: ${JWT_ISSUER:aether-user-management}
   cors:
     allowed-origins:

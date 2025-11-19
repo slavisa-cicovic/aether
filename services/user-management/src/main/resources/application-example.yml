@@ -24,7 +24,7 @@ spring:
 
 jwt:
   issuer: aether-user-management
-  secret: CHANGEME_SUPER_SECRET_KEY
+  secret: U3VwZXJTZWNyZXRLZXlGb3JBZXRoZXJOZXQhMjM0NTY3OA==
   expiration-minutes: 15
   refresh-expiration-days: 30
 
