@@ -19,10 +19,12 @@ axiosInstance.interceptors.request.use(
   async config => {
     const token = await authService.getToken();
     if (token) {
-      config.headers = {
-        ...(config.headers || {}),
+      // Merge headers into a plain object and cast to any to avoid AxiosHeaders API mismatch
+      const newHeaders = {
+        ...((config.headers as Record<string, any>) || {}),
         Authorization: `Bearer ${token}`,
       };
+      config.headers = newHeaders as any;
     }
 
     console.log("🔍 AXIOS REQUEST:", {
@@ -121,7 +123,9 @@ export const postFetcher = async <T = any>(
     );
   }
 
-  const transactionId = `txn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const transactionId = `txn-${Date.now()}-${Math.random()
+    .toString(36)
+    .substr(2, 9)}`;
   const authToken = options?.authToken;
   console.log(`🚀 POST ${finalUrl}`, { data, urlParams: options?.urlParams });
 

@@ -19,7 +19,11 @@ async function persistAuthData(data: AuthResponse): Promise<void> {
 }
 
 async function clearAuthStorage(): Promise<void> {
-  await AsyncStorage.multiRemove([ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_KEY]);
+  await AsyncStorage.multiRemove([
+    ACCESS_TOKEN_KEY,
+    REFRESH_TOKEN_KEY,
+    USER_KEY,
+  ]);
 }
 
 async function request<T>(path: string, body: unknown): Promise<T> {
