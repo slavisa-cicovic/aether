@@ -40,7 +40,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="expapi-test"
+          name="api-test"
           options={{
             title: "API Test",
             tabBarIcon: ({ color }) => (

@@ -28,9 +28,13 @@ async function clearAuthStorage(): Promise<void> {
 const buildAuthUrl = (path: string) => `${USER_MANAGEMENT_API_BASE_URL}${path}`;
 
 async function request<T>(path: string, body: unknown): Promise<T> {
-  const response = await userManagementClient.post<T>(buildAuthUrl(path), body, {
-    baseURL: undefined,
-  });
+  const response = await userManagementClient.post<T>(
+    buildAuthUrl(path),
+    body,
+    {
+      baseURL: undefined,
+    }
+  );
   return response.data;
 }
 

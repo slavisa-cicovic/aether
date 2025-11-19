@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { LoginCredentials } from "@src/api/types/auth";
 import { User } from "@src/api/types/user";
 import { authService } from "@src/services/authService";
+import { saveBiometricCredentials } from "@src/utils/biometricStorage";
 
 interface AuthState {
   user: User | null;
@@ -12,6 +13,7 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   hydrated: boolean;
+  biometricCredentialVersion: number;
   login: (credentials: LoginCredentials) => Promise<void>;
   loginWithRefreshToken: (refreshToken?: string | null) => Promise<void>;
   logout: () => Promise<void>;
@@ -26,6 +28,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   loading: false,
   error: null,
   hydrated: false,
+  biometricCredentialVersion: 0,
 
   hydrate: async () => {
     try {
@@ -51,13 +54,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await authService.login(credentials);
-      set({
+      await saveBiometricCredentials(credentials);
+      set(state => ({
         user: response.user,
         accessToken: response.accessToken,
         refreshToken: response.refreshToken,
         loading: false,
         error: null,
-      });
+        biometricCredentialVersion: state.biometricCredentialVersion + 1,
+      }));
     } catch (error: unknown) {
       const message = deriveAuthErrorMessage(error);
       set({

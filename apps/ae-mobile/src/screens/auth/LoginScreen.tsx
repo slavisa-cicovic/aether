@@ -17,8 +17,8 @@ import { useBiometricAuth } from "@src/hooks/useBiometricAuth";
 export default function LoginScreen() {
   const router = useRouter();
   const { colors, spacing } = useTheme();
-  const [email, setEmail] = useState("user@local");
-  const [password, setPassword] = useState("admin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
 
   const login = useAuthStore(state => state.login);
@@ -26,12 +26,8 @@ export default function LoginScreen() {
   const error = useAuthStore(state => state.error);
   const clearError = useAuthStore(state => state.clearError);
 
-  const {
-    canUseBiometrics,
-    label: biometricLabel,
-    loading: biometricLoading,
-    loginWithBiometrics,
-  } = useBiometricAuth();
+  const { canUseBiometrics, label: biometricLabel, loginWithBiometrics } =
+    useBiometricAuth();
 
   const handleLogin = async () => {
     clearError();
@@ -118,7 +114,7 @@ export default function LoginScreen() {
             <AppButton
               title={`Sign in with ${biometricLabel}`}
               onPress={handleBiometricLogin}
-              loading={biometricLoading}
+              loading={loading}
               variant="outline"
               style={{ marginTop: spacing.md }}
             />
