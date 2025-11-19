@@ -3,7 +3,6 @@ package com.aethernet.voicegateway.config.filters;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ConfigurableAuthFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private AuthProperties authProperties;
+    private final AuthProperties authProperties;
+
+    public ConfigurableAuthFilter(AuthProperties authProperties) {
+        this.authProperties = authProperties;
+    }
 
     // PUBLIC ENDPOINTS
     private static final List<String> PUBLIC_ENDPOINTS = List.of(
@@ -55,18 +57,7 @@ public class ConfigurableAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        switch (authProperties.getMode()) {
-            case DUMMY:
-                handleDummyAuth(request, response, filterChain);
-                break;
-            case JWT:
-                handleJwtAuth(request, response, filterChain);
-                break;
-            default:
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("{\"error\": \"Authentication mode not supported\"}");
-                return;
-        }
+        handleDummyAuth(request, response, filterChain);
     }
 
     private boolean isPublicEndpoint(String path) {
@@ -122,8 +113,8 @@ public class ConfigurableAuthFilter extends OncePerRequestFilter {
         return authProperties.getDummy().getToken().equals(token);
     }
 
-    private void handleJwtAuth(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
-        // Real JWT auth implementacija za budućnost
-        throw new UnsupportedOperationException("JWT auth not yet implemented");
+    @Override
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
+        return authProperties.getMode() != AuthProperties.AuthMode.DUMMY;
     }
 }

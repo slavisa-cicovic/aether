@@ -11,6 +11,11 @@ A complete ecosystem for autonomous drone delivery services.
 - **[user-management](./user-management/)** - User authentication and management  
 - **[drone-orchestrator](./drone-orchestrator/)** - Drone fleet management and delivery coordination
 
+## 🔐 Authentication Flow
+- `user-management` is the single issuer for both access and refresh JWT tokens via `/api/auth/login`, `/api/auth/refresh`, and `/api/auth/logout`.
+- Tokens include the user id, email, and roles and are signed with a shared HS256 secret defined in each service’s configuration (`jwt.secret` / `app.auth.jwt.secret`).
+- Other backend services (e.g., `voice-gateway`) validate the JWT locally—verifying the signature, issuer, expiration, and mapping roles to authorities—without calling `user-management` on every request.
+
 ### Frontend Applications
 - **[mobile-app](./mobile-app/)** - React Native mobile application
 - **[web-dashboard](./web-dashboard/)** - React web dashboard for operators

@@ -1,6 +1,5 @@
 package com.aethernet.voicegateway.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,14 +11,21 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.aethernet.voicegateway.config.AuthProperties.AuthMode;
 import com.aethernet.voicegateway.config.filters.ConfigurableAuthFilter;
+import com.aethernet.voicegateway.security.JwtAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-        @Autowired
-        private CorsProperties corsProperties;
+        private final CorsProperties corsProperties;
+        private final AuthProperties authProperties;
+        private final ConfigurableAuthFilter configurableAuthFilter;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,18 +51,17 @@ public class SecurityConfig {
                                                                 "/v3/api-docs/**")
                                                 .permitAll()
                                                 .requestMatchers("/analytics/**").hasRole("ADMIN")
-                                                .requestMatchers("/v1/voice/sessions/**").hasRole("VOICE_AGENT") // Zahtevaju
-                                                                                                                 // autentifikaciju
-                                                .anyRequest().authenticated() // Ostali zahtevaju auth
-                                )
-                                .addFilterBefore(configurableAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+                                                .requestMatchers("/v1/voice/sessions/**").hasRole("VOICE_AGENT")
+                                                .anyRequest().authenticated()
+                                );
+
+                if (authProperties.getMode() == AuthMode.DUMMY) {
+                        http.addFilterBefore(configurableAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                } else {
+                        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                }
 
                 return http.build();
-        }
-
-        @Bean
-        public ConfigurableAuthFilter configurableAuthFilter() {
-                return new ConfigurableAuthFilter();
         }
 
         @Bean
@@ -73,7 +78,7 @@ public class SecurityConfig {
                 configuration.setMaxAge(corsProperties.getMaxAge());
 
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                source.registerCorsConfiguration("/**", configuration); 
+                source.registerCorsConfiguration("/**", configuration);
                 source.registerCorsConfiguration("/v1/**", configuration);
 
                 return source;

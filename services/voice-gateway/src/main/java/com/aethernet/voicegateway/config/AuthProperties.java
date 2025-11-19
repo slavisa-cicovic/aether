@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app.auth")
 public class AuthProperties {
 
-    private AuthMode mode = AuthMode.DUMMY;
+    private AuthMode mode = AuthMode.JWT;
     private DummyAuth dummy = new DummyAuth();
     private JwtAuth jwt = new JwtAuth();
 

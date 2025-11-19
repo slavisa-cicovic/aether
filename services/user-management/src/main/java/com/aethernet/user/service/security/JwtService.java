@@ -1,13 +1,19 @@
 package com.aethernet.user.service.security;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.aethernet.user.domain.Role;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -56,12 +62,43 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = buildClaims(userDetails);
+
         return Jwts.builder()
+                .claims(claims)
                 .issuer(issuer)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationMinutes * 60_000))
                 .signWith(getSigningKey())
                 .compact();
+    }
+
+    private Map<String, Object> buildClaims(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", userDetails.getUsername());
+        claims.put("roles", extractRoleNames(userDetails));
+
+        if (userDetails instanceof UserPrincipal userPrincipal && userPrincipal.getUser() != null) {
+            claims.put("userId", userPrincipal.getUser().getId());
+        }
+
+        return claims;
+    }
+
+    private Set<String> extractRoleNames(UserDetails userDetails) {
+        if (userDetails instanceof UserPrincipal userPrincipal && userPrincipal.getUser() != null) {
+            Set<Role> roles = userPrincipal.getUser().getRoles();
+            if (roles != null) {
+                return roles.stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toSet());
+            }
+        }
+
+        return userDetails.getAuthorities()
+                .stream()
+                .map(authority -> authority.getAuthority().replace("ROLE_", ""))
+                .collect(Collectors.toSet());
     }
 }

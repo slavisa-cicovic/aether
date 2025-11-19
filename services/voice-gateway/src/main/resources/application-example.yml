@@ -24,12 +24,12 @@ spring:
 
 app:
   auth:
-      mode: ${AUTH_MODE:DUMMY} # DUMMY, JWT, OAUTH2
-      dummy:
-        token: ${DUMMY_TOKEN:dummy-voice-agent-token}
-      jwt:
-        secret: ${JWT_SECRET:your-jwt-secret-key}
-        issuer: ${JWT_ISSUER:aether-voice-gateway}
+    mode: ${AUTH_MODE:JWT}
+    dummy:
+      token: ${DUMMY_TOKEN:dummy-voice-agent-token}
+    jwt:
+      secret: ${JWT_SECRET:CHANGEME_SECRET}
+      issuer: ${JWT_ISSUER:aether-user-management}
   cors:
     allowed-origins:
       - "http://localhost:3000" # react dev server
