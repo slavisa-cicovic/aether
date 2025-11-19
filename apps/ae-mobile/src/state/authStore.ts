@@ -13,6 +13,7 @@ interface AuthState {
   error: string | null;
   hydrated: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
+  loginWithRefreshToken: (refreshToken?: string | null) => Promise<void>;
   logout: () => Promise<void>;
   hydrate: () => Promise<void>;
   clearError: () => void;
@@ -50,6 +51,31 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await authService.login(credentials);
+      set({
+        user: response.user,
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+        loading: false,
+        error: null,
+      });
+    } catch (error: unknown) {
+      const message = deriveAuthErrorMessage(error);
+      set({
+        error: message,
+        loading: false,
+      });
+      throw new Error(message);
+    }
+  },
+
+  loginWithRefreshToken: async refreshTokenArg => {
+    set({ loading: true, error: null });
+    try {
+      const token = refreshTokenArg || (await authService.getRefreshToken());
+      if (!token) {
+        throw new Error("Missing refresh token.");
+      }
+      const response = await authService.refresh(token);
       set({
         user: response.user,
         accessToken: response.accessToken,

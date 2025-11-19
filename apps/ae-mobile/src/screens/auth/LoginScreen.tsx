@@ -12,6 +12,7 @@ import AppInput from "@src/components/ui/AppInput";
 import AppText from "@src/components/ui/AppText";
 import { useTheme } from "@src/theme";
 import { useAuthStore } from "@src/state/authStore";
+import { useBiometricAuth } from "@src/hooks/useBiometricAuth";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -24,6 +25,13 @@ export default function LoginScreen() {
   const loading = useAuthStore(state => state.loading);
   const error = useAuthStore(state => state.error);
   const clearError = useAuthStore(state => state.clearError);
+
+  const {
+    canUseBiometrics,
+    label: biometricLabel,
+    loading: biometricLoading,
+    loginWithBiometrics,
+  } = useBiometricAuth();
 
   const handleLogin = async () => {
     clearError();
@@ -42,6 +50,22 @@ export default function LoginScreen() {
         setFormError(err.message);
       } else {
         setFormError("Login failed. Please try again.");
+      }
+    }
+  };
+
+  const handleBiometricLogin = async () => {
+    setFormError(null);
+    clearError();
+
+    try {
+      await loginWithBiometrics();
+      router.replace("/(tabs)");
+    } catch (err) {
+      if (err instanceof Error) {
+        setFormError(err.message);
+      } else {
+        setFormError("Biometric login failed. Please try again.");
       }
     }
   };
@@ -89,6 +113,16 @@ export default function LoginScreen() {
             loading={loading}
             style={{ marginTop: spacing.lg }}
           />
+
+          {canUseBiometrics && (
+            <AppButton
+              title={`Sign in with ${biometricLabel}`}
+              onPress={handleBiometricLogin}
+              loading={biometricLoading}
+              variant="outline"
+              style={{ marginTop: spacing.md }}
+            />
+          )}
         </View>
       </View>
     </KeyboardAvoidingView>
