@@ -4,6 +4,7 @@ import {
   Platform,
   View,
   StyleSheet,
+  ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -68,59 +69,73 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.select({ ios: "padding", android: undefined })}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[styles.container, { backgroundColor: colors.background }]}
     >
-      <View style={[styles.card, { backgroundColor: colors.surface, padding: spacing.xl }]}>
-        <AppText variant="h2" style={styles.title}>
-          Welcome back
-        </AppText>
-        <AppText variant="bodyMedium" style={styles.subtitle}>
-          Sign in to continue to AetherNet
-        </AppText>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={[styles.scrollContent, { padding: spacing.xl }]}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: colors.surface, padding: spacing.xl },
+          ]}
+        >
+          <AppText variant="h2" style={styles.title}>
+            Welcome back
+          </AppText>
+          <AppText variant="bodyMedium" style={styles.subtitle}>
+            Sign in to continue to AetherNet
+          </AppText>
 
-        <View style={{ marginTop: spacing.xl }}>
-          <AppInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-          />
-
-          <AppInput
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            autoCapitalize="none"
-          />
-
-          {(formError || error) && (
-            <AppText variant="bodySmall" style={[styles.error, { color: colors.error }]}>
-              {formError || error}
-            </AppText>
-          )}
-
-          <AppButton
-            title="Sign In"
-            onPress={handleLogin}
-            loading={loading}
-            style={{ marginTop: spacing.lg }}
-          />
-
-          {canUseBiometrics && (
-            <AppButton
-              title={`Sign in with ${biometricLabel}`}
-              onPress={handleBiometricLogin}
-              loading={loading}
-              variant="outline"
-              style={{ marginTop: spacing.md }}
+          <View style={{ marginTop: spacing.xl }}>
+            <AppInput
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
             />
-          )}
+
+            <AppInput
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              autoCapitalize="none"
+            />
+
+            {(formError || error) && (
+              <AppText
+                variant="bodySmall"
+                style={[styles.error, { color: colors.error }]}
+              >
+                {formError || error}
+              </AppText>
+            )}
+
+            <AppButton
+              title="Sign In"
+              onPress={handleLogin}
+              loading={loading}
+              style={{ marginTop: spacing.lg }}
+            />
+
+            {canUseBiometrics && (
+              <AppButton
+                title={`Sign in with ${biometricLabel}`}
+                onPress={handleBiometricLogin}
+                loading={loading}
+                variant="outline"
+                style={{ marginTop: spacing.md }}
+              />
+            )}
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -128,8 +143,10 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: "center",
-    padding: 24,
   },
   card: {
     borderRadius: 16,
