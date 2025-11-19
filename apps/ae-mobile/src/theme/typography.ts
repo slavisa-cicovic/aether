@@ -9,6 +9,7 @@ export const typography = {
 
   body: { fontSize: scale(16), fontFamily: fonts.regular },
   bodyMedium: { fontSize: scale(16), fontFamily: fonts.medium },
+  bodySmall: { fontSize: scale(16), fontFamily: fonts.small },
   bodyBold: { fontSize: scale(16), fontFamily: fonts.semibold },
 
   caption: { fontSize: scale(12), fontFamily: fonts.regular },
