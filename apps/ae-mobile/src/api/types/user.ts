@@ -1,9 +1,13 @@
 export interface User {
-  id: string;
+  id: number;
   email: string;
-  name: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  active: boolean;
+  locked: boolean;
+  roles: string[];
 }
 
-export interface UserQuery{
+export interface UserQuery {
   userId?: string;
 }

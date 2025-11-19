@@ -1,26 +1,11 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import Constants from "expo-constants";
+
+import { authService } from "@src/services/authService";
+import { VOICE_GATEWAY_API_BASE_URL } from "@src/constants/config";
 import { camelToSnake, snakeToCamel } from "./transformers";
 
-function resolveBaseUrl(): string {
-  const debuggerHost =
-    Constants.expoConfig?.hostUri ||
-    Constants.manifest2?.extra?.expoGo?.developer?.hostUri;
-
-  if (debuggerHost) {
-    // Example: "192.168.10.148:8081" → take only IP
-    const host = debuggerHost.split(":")[0];
-    return `http://${host}:8080`;
-  }
-
-  // Fallback for production build (no Expo dev server)
-  return "https://app.aethernet.com";
-}
-
-const baseURL = resolveBaseUrl();
-
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL,
+  baseURL: VOICE_GATEWAY_API_BASE_URL,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -31,7 +16,15 @@ const axiosInstance: AxiosInstance = axios.create({
 // ----- Request / Response logging -----
 
 axiosInstance.interceptors.request.use(
-  config => {
+  async config => {
+    const token = await authService.getToken();
+    if (token) {
+      config.headers = {
+        ...(config.headers || {}),
+        Authorization: `Bearer ${token}`,
+      };
+    }
+
     console.log("🔍 AXIOS REQUEST:", {
       url: config.url,
       method: config.method,
@@ -128,17 +121,14 @@ export const postFetcher = async <T = any>(
     );
   }
 
-  const transactionId = `txn-${Date.now()}-${Math.random()
-    .toString(36)
-    .substr(2, 9)}`;
-  const authToken = options?.authToken || "dummy-voice-agent-token";
-
+  const transactionId = `txn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const authToken = options?.authToken;
   console.log(`🚀 POST ${finalUrl}`, { data, urlParams: options?.urlParams });
 
   const res = await axiosInstance.post(finalUrl, data, {
     headers: {
       "X-Transaction-ID": transactionId,
-      Authorization: `Bearer ${authToken}`,
+      ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
     },
   });
 

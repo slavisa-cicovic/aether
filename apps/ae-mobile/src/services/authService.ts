@@ -1,84 +1,102 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { AuthResponse, LoginCredentials } from "@src/api/types/auth";
+import { USER_MANAGEMENT_API_BASE_URL } from "@src/constants/config";
 import { User } from "@src/api/types/user";
 
-const fakeDelay = (ms: number): Promise<void> =>
-  new Promise(resolve => setTimeout(resolve, ms));
+const ACCESS_TOKEN_KEY = "auth.accessToken";
+const REFRESH_TOKEN_KEY = "auth.refreshToken";
+const USER_KEY = "auth.user";
+
+const buildUrl = (path: string) => `${USER_MANAGEMENT_API_BASE_URL}${path}`;
+
+async function persistAuthData(data: AuthResponse): Promise<void> {
+  await AsyncStorage.multiSet([
+    [ACCESS_TOKEN_KEY, data.accessToken],
+    [REFRESH_TOKEN_KEY, data.refreshToken],
+    [USER_KEY, JSON.stringify(data.user)],
+  ]);
+}
+
+async function clearAuthStorage(): Promise<void> {
+  await AsyncStorage.multiRemove([ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_KEY]);
+}
+
+async function request<T>(path: string, body: unknown): Promise<T> {
+  const response = await fetch(buildUrl(path), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Authentication request failed");
+  }
+
+  const text = await response.text();
+  if (!text) {
+    return {} as T;
+  }
+
+  return JSON.parse(text) as T;
+}
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    try {
-      await fakeDelay(1500);
-
-      if (!credentials.email || !credentials.password) {
-        throw new Error("Email and password are required");
-      }
-
-      console.log("Logging in with credentials:", credentials);
-
-      if (
-        credentials.email === "demo@aether.com" &&
-        credentials.password === "password"
-      ) {
-        const fakeUser: User = {
-          id: "1",
-          email: credentials.email,
-          name: "Demo User",
-        };
-
-        const fakeToken = "fake-jwt-token-" + Date.now();
-
-        const response: AuthResponse = {
-          token: fakeToken,
-          user: fakeUser,
-        };
-
-        await AsyncStorage.setItem("authToken", fakeToken);
-        await AsyncStorage.setItem("user", JSON.stringify(fakeUser));
-
-        return response;
-      } else {
-        // Za bilo koji drugi email/password kombinaciju prihvatamo kao validnu
-        // ali sa generičkim podacima
-        const fakeUser: User = {
-          id: Date.now().toString(),
-          email: credentials.email,
-          name: credentials.email.split("@")[0], // Koristimo prefix emaila kao ime
-        };
-
-        const fakeToken = "fake-jwt-token-" + Date.now();
-
-        const response: AuthResponse = {
-          token: fakeToken,
-          user: fakeUser,
-        };
-
-        await AsyncStorage.setItem("authToken", fakeToken);
-        await AsyncStorage.setItem("user", JSON.stringify(fakeUser));
-
-        return response;
-      }
-    } catch (error) {
-      throw new Error("Login failed. Please check your credentials.");
+    if (!credentials.email || !credentials.password) {
+      throw new Error("Email and password are required");
     }
+
+    const data = await request<AuthResponse>("/api/auth/login", credentials);
+    await persistAuthData(data);
+    return data;
+  },
+
+  async refresh(refreshToken?: string): Promise<AuthResponse> {
+    const token = refreshToken || (await this.getRefreshToken());
+    if (!token) {
+      throw new Error("Missing refresh token");
+    }
+
+    const data = await request<AuthResponse>("/api/auth/refresh", {
+      refreshToken: token,
+    });
+
+    await persistAuthData(data);
+    return data;
   },
 
   async logout(): Promise<void> {
-    await AsyncStorage.removeItem("authToken");
-    await AsyncStorage.removeItem("user");
+    const refreshToken = await this.getRefreshToken();
+    if (refreshToken) {
+      try {
+        await request<void>("/api/auth/logout", { refreshToken });
+      } catch (error) {
+        console.warn("Failed to revoke refresh token", error);
+      }
+    }
+
+    await clearAuthStorage();
   },
 
   async getToken(): Promise<string | null> {
-    return await AsyncStorage.getItem("authToken");
+    return AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+  },
+
+  async getRefreshToken(): Promise<string | null> {
+    return AsyncStorage.getItem(REFRESH_TOKEN_KEY);
   },
 
   async getUser(): Promise<User | null> {
-    const user = await AsyncStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
+    const user = await AsyncStorage.getItem(USER_KEY);
+    return user ? (JSON.parse(user) as User) : null;
   },
 
   async isAuthenticated(): Promise<boolean> {
     const token = await this.getToken();
-    return !!token;
+    return Boolean(token);
   },
 };
