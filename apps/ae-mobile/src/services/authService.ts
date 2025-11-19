@@ -2,7 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthResponse, LoginCredentials } from "@src/api/types/auth";
 import { User } from "@src/api/types/user";
 
-
 const fakeDelay = (ms: number): Promise<void> =>
   new Promise(resolve => setTimeout(resolve, ms));
 
