@@ -3,6 +3,7 @@ package com.aethernet.user.service.auth;
 import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -125,7 +126,8 @@ public class AuthService {
     // INTERNAL HELPERS
     // =========================================================================
 
-    private String createRefreshToken(User user) {
+    @SuppressWarnings("null")
+    private String createRefreshToken(@NonNull User user) {
 
         RefreshToken token = RefreshToken.builder()
                 .user(user)
