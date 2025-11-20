@@ -27,4 +27,5 @@ public class AdminUserProperties {
 
     private String firstName = "System";
     private String lastName = "Administrator";
+    private String lang = "en";
 }

@@ -3,22 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
-
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/settings", label: "Settings" }
-];
+import { useTranslations } from "next-intl";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const tNav = useTranslations("nav");
+  const tCommon = useTranslations("common");
+  const navItems = [
+    { href: "/dashboard", label: tNav("dashboard") },
+    { href: "/settings", label: tNav("settings") }
+  ];
 
   return (
     <aside className="hidden w-64 flex-none border-r border-slate-200 bg-white/80 p-4 dark:border-slate-800 dark:bg-slate-900/60 lg:block">
       <div className="mb-6 text-xs font-semibold uppercase text-slate-500">
-        Navigation
+        {tCommon("navigation")}
       </div>
       <nav className="space-y-2">
-        {NAV_ITEMS.map(item => (
+        {navItems.map(item => (
           <Link
             key={item.href}
             href={item.href}

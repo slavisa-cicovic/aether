@@ -50,6 +50,10 @@ public class User extends BaseAuditEntity {
     private String lastName;
 
     @Builder.Default
+    @Column(name = "lang", length = 10, nullable = false)
+    private String lang = "en";
+
+    @Builder.Default
     @Column(nullable = false)
     private boolean active = true;
 

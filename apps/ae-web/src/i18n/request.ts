@@ -1,6 +1,18 @@
-export default function getRequestConfig() {
+import { cookies, headers } from "next/headers";
+import { defaultLocale, localeCookieName, locales, pickLocale } from "./index";
+
+export default async function getRequestConfig() {
+  const cookieStore = await cookies();
+  const headerList = await headers();
+
+  const locale = pickLocale({
+    cookieLocale: cookieStore.get(localeCookieName)?.value,
+    acceptLanguage: headerList.get("accept-language")
+  });
+
   return {
-    locales: ["en"],
-    defaultLocale: "en"
+    locales,
+    defaultLocale,
+    locale
   };
 }

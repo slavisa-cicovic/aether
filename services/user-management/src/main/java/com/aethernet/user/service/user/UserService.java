@@ -18,6 +18,7 @@ import com.aethernet.user.dto.response.UserResponse;
 import com.aethernet.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +54,7 @@ public class UserService {
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
+                .lang(resolveLang(request.getLang()))
                 .active(true)
                 .locked(false)
                 .deleted(false)
@@ -71,6 +73,9 @@ public class UserService {
         user.setLastName(request.getLastName());
         user.setActive(Boolean.TRUE.equals(request.isActive()));
         user.setLocked(Boolean.TRUE.equals(request.isLocked()));
+        if (StringUtils.hasText(request.getLang())) {
+            user.setLang(resolveLang(request.getLang()));
+        }
 
         return toUserResponse(userRepository.save(user));
     }
@@ -91,6 +96,7 @@ public class UserService {
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .lang(user.getLang())
                 .active(user.isActive())
                 .locked(user.isLocked())
                 .roles(toRoleNames(user))
@@ -103,5 +109,9 @@ public class UserService {
                 .stream()
                 .map(role -> role.getName())
                 .collect(java.util.stream.Collectors.toSet());
+    }
+
+    private String resolveLang(String lang) {
+        return StringUtils.hasText(lang) ? lang : "en";
     }
 }

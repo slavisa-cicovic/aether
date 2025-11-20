@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { AUTH_COOKIE_NAME } from "@/lib/auth/session";
+import { localeCookieName, pickLocale } from "@/i18n";
 
 const USER_MGMT_PROFILE_URL =
   process.env.USER_MGMT_PROFILE_URL ?? "http://localhost:8082/api/auth/me";
 
 export async function GET() {
-  const token = cookies().get(AUTH_COOKIE_NAME)?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
   if (!token) {
     return NextResponse.json({ user: null }, { status: 401 });
   }
@@ -22,5 +24,13 @@ export async function GET() {
   }
 
   const user = await upstream.json();
-  return NextResponse.json({ user });
+  const locale = pickLocale({
+    userLocale: user?.lang,
+    cookieLocale: cookieStore.get(localeCookieName)?.value,
+    acceptLanguage: (await headers()).get("accept-language")
+  });
+
+  const response = NextResponse.json({ user });
+  response.cookies.set(localeCookieName, locale, { path: "/" });
+  return response;
 }

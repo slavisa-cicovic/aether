@@ -17,6 +17,7 @@ export const expiredCookieOptions = {
   maxAge: 0
 };
 
-export function getServerAuthToken(): string | undefined {
-  return cookies().get(AUTH_COOKIE_NAME)?.value;
+export async function getServerAuthToken(): Promise<string | undefined> {
+  const cookieStore = await cookies();
+  return cookieStore.get(AUTH_COOKIE_NAME)?.value;
 }

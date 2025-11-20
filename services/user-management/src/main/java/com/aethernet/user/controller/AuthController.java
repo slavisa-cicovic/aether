@@ -72,6 +72,7 @@ public class AuthController {
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .lang(user.getLang())
                 .active(user.isActive())
                 .locked(user.isLocked())
                 .roles(toRoleNames(user))

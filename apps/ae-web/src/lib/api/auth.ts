@@ -1,8 +1,16 @@
 import { LoginSchema } from "@/lib/validation/auth";
 
+export interface UserDto {
+  id: number;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  lang?: string;
+}
+
 export interface LoginResponse {
   accessToken: string;
-  user: { id: number; email: string; firstName?: string; lastName?: string };
+  user: UserDto;
 }
 
 export async function loginRequest(
@@ -16,7 +24,7 @@ export async function loginRequest(
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({}));
-    throw new Error(error?.message ?? "Unable to login");
+    throw new Error(error?.message ?? "LOGIN_ERROR");
   }
 
   return res.json();

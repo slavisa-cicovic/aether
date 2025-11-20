@@ -13,6 +13,8 @@ public class UpdateUserRequest {
     @NotBlank
     private String lastName;
 
+    private String lang;
+
     @NotNull
     private boolean active;
 

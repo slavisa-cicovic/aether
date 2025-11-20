@@ -60,6 +60,7 @@ public class DataInitializer implements CommandLineRunner {
                             passwordEncoder.encode(adminUserProperties.getPassword())))
                     .firstName(adminUserProperties.getFirstName())
                     .lastName(adminUserProperties.getLastName())
+                    .lang(adminUserProperties.getLang())
                     .roles(Set.of(adminRole))
                     .active(true)
                     .locked(false)
@@ -68,7 +69,8 @@ public class DataInitializer implements CommandLineRunner {
 
             userRepository.save(Objects.requireNonNull(admin));
 
-            log.info("✔ Created default admin user: {}", adminUserProperties.getEmail());
+            log.info("✔ Created default admin user: {} (lang={})", adminUserProperties.getEmail(),
+                    adminUserProperties.getLang());
         } else {
             log.info("✔ Admin user already exists: {}", adminUserProperties.getEmail());
         }

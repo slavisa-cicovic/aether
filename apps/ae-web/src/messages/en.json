@@ -1,5 +1,66 @@
 {
+  "common": {
+    "brand": "AetherOps",
+    "navigation": "Navigation",
+    "operatorFallback": "Operator",
+    "logout": "Logout",
+    "language": {
+      "label": "Language",
+      "en": "English",
+      "sr-Latn": "Srpski (latinica)",
+      "sr-Cyrl": "Српски (ћирилица)"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Settings"
+  },
   "dashboard": {
-    "title": "Mission Control"
+    "title": "Mission Control",
+    "loading": "Loading metrics...",
+    "liveStatus": "Live status",
+    "cards": {
+      "activeSessions": {
+        "title": "Active Sessions",
+        "delta": "+12% vs last hour"
+      },
+      "missionsToday": {
+        "title": "Missions Today",
+        "delta": "+3% vs yesterday"
+      },
+      "fleetAvailability": {
+        "title": "Fleet Availability",
+        "delta": "Stable"
+      }
+    },
+    "status": {
+      "normal": "All drone fleets operating within parameters."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "currentMode": "Current mode: {mode}",
+    "toggleTheme": "Toggle Theme",
+    "mode": {
+      "light": "light",
+      "dark": "dark"
+    }
+  },
+  "login": {
+    "subtitle": "Aether Console",
+    "title": "Sign in",
+    "helper": "Use your Aether operator credentials.",
+    "cta": "Sign in",
+    "ctaLoading": "Signing in...",
+    "error": "Unable to sign in",
+    "fields": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "validation": {
+      "email": "Enter a valid email",
+      "passwordLength": "Password must be at least 6 characters"
+    }
   }
 }

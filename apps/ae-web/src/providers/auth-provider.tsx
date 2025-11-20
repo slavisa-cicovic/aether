@@ -8,14 +8,15 @@ import {
   useState
 } from "react";
 import { LoginSchema } from "@/lib/validation/auth";
-import { loginRequest, logoutRequest } from "@/lib/api/auth";
+import { loginRequest, logoutRequest, UserDto } from "@/lib/api/auth";
 import { setAuthToken } from "@/lib/api/client";
 
 interface AuthContextValue {
-  user: { id: number; email: string } | null;
+  user: UserDto | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  setUserLocale: (lang: string) => void;
 }
 
 const TOKEN_STORAGE_KEY = "ae-auth-token";
@@ -64,14 +65,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.href = "/login";
   }, []);
 
+  const setUserLocale = useCallback((lang: string) => {
+    setUser(prev => (prev ? { ...prev, lang } : prev));
+  }, []);
+
   const value = useMemo(
     () => ({
       user,
       isAuthenticated: Boolean(token),
       login,
-      logout
+      logout,
+      setUserLocale
     }),
-    [user, token, login, logout]
+    [user, token, login, logout, setUserLocale]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

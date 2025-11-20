@@ -41,6 +41,7 @@ app:
     password: admin
     first-name: System
     last-name: Administrator
+    lang: en
 
 logging:
   level:

@@ -21,4 +21,6 @@ public class RegisterUserRequest {
 
     @NotBlank
     private String lastName;
+
+    private String lang;
 }

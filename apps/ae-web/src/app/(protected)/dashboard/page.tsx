@@ -2,14 +2,16 @@
 
 import { Card, CardContent, Typography, Grid } from "@mui/material";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useTranslations } from "next-intl";
 
 export default function DashboardPage() {
   const { data, isLoading } = useDashboardData();
+  const t = useTranslations("dashboard");
 
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <Typography variant="body1">Loading metrics...</Typography>
+        <Typography variant="body1">{t("loading")}</Typography>
       </div>
     );
   }
@@ -17,7 +19,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <Typography variant="h4" fontWeight="bold">
-        Mission Control
+        {t("title")}
       </Typography>
       <Grid container spacing={3}>
         {data?.cards.map(card => (
@@ -39,7 +41,7 @@ export default function DashboardPage() {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Live status
+            {t("liveStatus")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {data?.status}

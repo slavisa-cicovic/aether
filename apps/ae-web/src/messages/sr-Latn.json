@@ -1,0 +1,66 @@
+{
+  "common": {
+    "brand": "AetherOps",
+    "navigation": "Navigacija",
+    "operatorFallback": "Operator",
+    "logout": "Odjava",
+    "language": {
+      "label": "Jezik",
+      "en": "English",
+      "sr-Latn": "Srpski (latinica)",
+      "sr-Cyrl": "Српски (ћирилица)"
+    }
+  },
+  "nav": {
+    "dashboard": "Kontrolna tabla",
+    "settings": "Podešavanja"
+  },
+  "dashboard": {
+    "title": "Kontrolni centar",
+    "loading": "Učitavanje metrika...",
+    "liveStatus": "Status uživo",
+    "cards": {
+      "activeSessions": {
+        "title": "Aktivne sesije",
+        "delta": "+12% u odnosu na poslednji sat"
+      },
+      "missionsToday": {
+        "title": "Današnje misije",
+        "delta": "+3% u odnosu na juče"
+      },
+      "fleetAvailability": {
+        "title": "Dostupnost flote",
+        "delta": "Stabilno"
+      }
+    },
+    "status": {
+      "normal": "Sve drone flote rade u okviru parametara."
+    }
+  },
+  "settings": {
+    "title": "Podešavanja",
+    "appearance": "Izgled",
+    "currentMode": "Trenutni režim: {mode}",
+    "toggleTheme": "Promeni temu",
+    "mode": {
+      "light": "svetli",
+      "dark": "tamni"
+    }
+  },
+  "login": {
+    "subtitle": "Aether konzola",
+    "title": "Prijavi se",
+    "helper": "Koristi svoje Aether operatorske kredencijale.",
+    "cta": "Prijava",
+    "ctaLoading": "Prijavljivanje...",
+    "error": "Neuspešna prijava",
+    "fields": {
+      "email": "Email",
+      "password": "Lozinka"
+    },
+    "validation": {
+      "email": "Unesi ispravnu email adresu",
+      "passwordLength": "Lozinka mora imati najmanje 6 karaktera"
+    }
+  }
+}

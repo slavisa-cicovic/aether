@@ -6,19 +6,24 @@ import { Button, TextField, Alert, Stack, Divider } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { loginSchema, LoginSchema } from "@/lib/validation/auth";
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { createLoginSchema, LoginSchema } from "@/lib/validation/auth";
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("login");
+  const validation = useTranslations("login.validation");
+  const validationSchema = useMemo(() => createLoginSchema(validation), [validation]);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema)
+    resolver: zodResolver(validationSchema)
   });
 
   const onSubmit = async (data: LoginSchema) => {
@@ -27,7 +32,12 @@ export default function LoginPage() {
       await login(data.email, data.password);
       router.replace("/dashboard");
     } catch (err: any) {
-      setError(err?.message ?? "Unable to sign in");
+      const fallbackError = t("error");
+      const message =
+        typeof err?.message === "string" && err.message !== "LOGIN_ERROR"
+          ? err.message
+          : fallbackError;
+      setError(message);
     }
   };
 
@@ -35,10 +45,10 @@ export default function LoginPage() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="text-center">
         <p className="text-sm font-semibold uppercase text-slate-500">
-          Aether Console
+          {t("subtitle")}
         </p>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-          Sign in
+          {t("title")}
         </h1>
       </div>
 
@@ -46,7 +56,7 @@ export default function LoginPage() {
 
       <Stack spacing={3}>
         <TextField
-          label="Email"
+          label={t("fields.email")}
           type="email"
           fullWidth
           error={Boolean(errors.email)}
@@ -54,7 +64,7 @@ export default function LoginPage() {
           {...register("email")}
         />
         <TextField
-          label="Password"
+          label={t("fields.password")}
           type="password"
           fullWidth
           error={Boolean(errors.password)}
@@ -71,11 +81,11 @@ export default function LoginPage() {
         size="large"
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Signing in..." : "Sign in"}
+        {isSubmitting ? t("ctaLoading") : t("cta")}
       </Button>
       <Divider />
       <p className="text-center text-xs text-slate-500">
-        Use your Aether operator credentials.
+        {t("helper")}
       </p>
     </form>
   );
