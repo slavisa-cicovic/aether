@@ -17,7 +17,6 @@ spring:
     open-in-view: false
     properties:
       hibernate.format_sql: true
-
   jackson:
     serialization:
       write-dates-as-timestamps: false

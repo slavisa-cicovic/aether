@@ -55,7 +55,8 @@ public class DataInitializer implements CommandLineRunner {
         if (!userRepository.existsByEmail(adminUserProperties.getEmail())) {
 
             User admin = User.builder()
-                    .email(adminUserProperties.getEmail())
+                    .email(Objects.requireNonNull(adminUserProperties.getEmail(),
+                            "admin user email must be configured"))
                     .passwordHash(Objects.requireNonNull(
                             passwordEncoder.encode(adminUserProperties.getPassword())))
                     .firstName(adminUserProperties.getFirstName())

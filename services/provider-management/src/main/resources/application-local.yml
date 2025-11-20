@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: provider-management
+  datasource:
+    url: jdbc:mysql://localhost:3306/aethernet_provider?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: erm*4MySql
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+transport:
+  base-price: 300
+
+logging:
+  level:
+    root: INFO
