@@ -34,6 +34,14 @@ management:
       exposure:
         include: "health,info"
 
+app:
+  admin:
+    seed-enabled: true
+    email: admin@local
+    password: admin
+    first-name: System
+    last-name: Administrator
+
 logging:
   level:
     org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer: ERROR

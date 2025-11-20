@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 
 import com.aethernet.user.domain.Role;
 import com.aethernet.user.domain.User;
@@ -23,6 +24,7 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AdminUserProperties adminUserProperties;
 
     @Override
     public void run(String... args) {
@@ -36,13 +38,28 @@ public class DataInitializer implements CommandLineRunner {
         // -------------------------------------------------------
         // 2. Create Admin User if not exists
         // -------------------------------------------------------
-        if (!userRepository.existsByEmail("admin@local")) {
+        if (!adminUserProperties.isSeedEnabled()) {
+            log.info("Admin user seeding is disabled via configuration.");
+            return;
+        }
+
+        if (!StringUtils.hasText(adminUserProperties.getEmail())
+                || !StringUtils.hasText(adminUserProperties.getPassword())) {
+            log.warn("Skipping admin user creation; app.admin.email/password not configured.");
+            return;
+        }
+
+        // -------------------------------------------------------
+        // 2. Create Admin User if not exists
+        // -------------------------------------------------------
+        if (!userRepository.existsByEmail(adminUserProperties.getEmail())) {
 
             User admin = User.builder()
-                    .email("admin@local")
-                    .passwordHash(Objects.requireNonNull(passwordEncoder.encode("admin")))
-                    .firstName("System")
-                    .lastName("Administrator")
+                    .email(adminUserProperties.getEmail())
+                    .passwordHash(Objects.requireNonNull(
+                            passwordEncoder.encode(adminUserProperties.getPassword())))
+                    .firstName(adminUserProperties.getFirstName())
+                    .lastName(adminUserProperties.getLastName())
                     .roles(Set.of(adminRole))
                     .active(true)
                     .locked(false)
@@ -51,9 +68,9 @@ public class DataInitializer implements CommandLineRunner {
 
             userRepository.save(Objects.requireNonNull(admin));
 
-            log.info("✔ Created default admin user: admin@local / admin");
+            log.info("✔ Created default admin user: {}", adminUserProperties.getEmail());
         } else {
-            log.error("✔ Admin user already exists.");
+            log.info("✔ Admin user already exists: {}", adminUserProperties.getEmail());
         }
     }
 
