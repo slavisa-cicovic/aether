@@ -4,25 +4,22 @@
 
     <!-- Spring Boot parent, kao u voice-gateway -->
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
-        <relativePath />
+        <groupId>com.aethernet</groupId>
+        <artifactId>aether-services-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>com.aethernet</groupId>
     <artifactId>aether-user-management</artifactId>
     <version>1.0.0</version>
     <name>Aether User Management</name>
 
-    <!-- Java 21 -->
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <java.version>21</java.version>
-    </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>com.aethernet</groupId>
+            <artifactId>service-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- DEVTOOLS -->
         <dependency>
@@ -53,7 +50,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
         </dependency>
 
         <!-- Validation -->
@@ -72,18 +68,15 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.12.6</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -98,14 +91,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring</artifactId>
-            <version>2.5.6.SEC03</version>
         </dependency>
 
         <!-- SPRINGDOC OpenAPI (kao u voice-gateway) -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.8.6</version>
         </dependency>
 
         <!-- LOMBOK -->
@@ -115,6 +106,11 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Explicitly add a released hibernate-core to avoid "Missing artifact" resolution errors -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

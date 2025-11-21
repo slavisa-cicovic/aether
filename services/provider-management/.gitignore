@@ -1,0 +1,44 @@
+# IDEA
+.idea/
+*.iml
+out/
+*.ipr
+*.iws
+
+# VSCode
+.vscode/
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Backup
+*.orig
+*.tmp
+
+# Spring Boot
+spring.log
+
+# Node (ako eventualno imaš FE deo)
+node_modules/
+
+# Environment files
+application-local.yml
+.env
+.env.*

@@ -3,25 +3,22 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.7</version>
-    <relativePath />
+    <groupId>com.aethernet</groupId>
+    <artifactId>aether-services-parent</artifactId>
+    <version>1.0.0</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <groupId>com.aethernet</groupId>
   <artifactId>provider-management</artifactId>
   <version>1.0.0</version>
   <name>Aether Provider Management</name>
 
-  <properties>
-    <java.version>21</java.version>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
-    <mapstruct.version>1.5.5.Final</mapstruct.version>
-  </properties>
-
   <dependencies>
+    <dependency>
+      <groupId>com.aethernet</groupId>
+      <artifactId>service-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -37,7 +34,6 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.33</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -47,18 +43,21 @@
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
-      <version>${mapstruct.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct-processor</artifactId>
-      <version>${mapstruct.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mnode.ical4j</groupId>
       <artifactId>ical4j</artifactId>
-      <version>3.2.12</version>
+    </dependency>
+
+    <!-- Explicitly add a released hibernate-core to avoid "Missing artifact" resolution errors -->
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
     </dependency>
 
     <dependency>

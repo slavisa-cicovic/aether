@@ -4,6 +4,8 @@ server:
     context-path: /v1
 
 spring:
+  config:
+    import: optional:classpath:application-common.yml
   application:
     name: aether-voice-gateway
   datasource:

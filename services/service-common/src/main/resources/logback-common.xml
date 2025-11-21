@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="application" />
+    <springProperty scope="context" name="ROOT_LOG_LEVEL" source="logging.level.root" defaultValue="INFO" />
+    <springProperty scope="context" name="CONSOLE_PATTERN"
+        source="logging.pattern.console"
+        defaultValue="%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr([%thread]){magenta} %highlight(%-5level) %clr(%logger{36}){cyan} - [%file:%line] - %msg%n" />
+    <springProperty scope="context" name="FILE_PATTERN"
+        source="logging.pattern.file"
+        defaultValue="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - [%file:%line] - %msg%n" />
+
+    <property name="LOG_FILE" value="logs/${APP_NAME}.log" />
+    <property name="LOG_ARCHIVE_PATTERN" value="logs/${APP_NAME}.%d{yyyy-MM-dd}.gz" />
+
+    <conversionRule conversionWord="clr"
+        converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex"
+        converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx"
+        converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_ARCHIVE_PATTERN}</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="${ROOT_LOG_LEVEL}">
+        <appender-ref ref="Console" />
+        <appender-ref ref="File" />
+    </root>
+
+</configuration>

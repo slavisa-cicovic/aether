@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:classpath:application-common.yml
   application:
     name: provider-management
   datasource:
@@ -16,7 +18,3 @@ spring:
 
 transport:
   base-price: 300
-
-logging:
-  level:
-    root: INFO
