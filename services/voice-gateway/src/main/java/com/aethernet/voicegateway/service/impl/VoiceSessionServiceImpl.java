@@ -11,22 +11,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aethernet.voicegateway.dto.request.AddressVerificationRequest;
 import com.aethernet.voicegateway.dto.request.CancelRequest;
-import com.aethernet.voicegateway.dto.request.MerchantVerificationRequest;
+import com.aethernet.voicegateway.dto.request.ProviderVerificationRequest;
 import com.aethernet.voicegateway.dto.request.OrderConfirmationRequest;
 import com.aethernet.voicegateway.dto.request.PaymentRequest;
 import com.aethernet.voicegateway.dto.request.QuoteRequest;
 import com.aethernet.voicegateway.dto.request.SessionCreateRequest;
 import com.aethernet.voicegateway.dto.response.AddressVerificationResponse;
-import com.aethernet.voicegateway.dto.response.MerchantVerificationResponse;
+import com.aethernet.voicegateway.dto.response.ProviderVerificationResponse;
 import com.aethernet.voicegateway.dto.response.OrderConfirmationResponse;
 import com.aethernet.voicegateway.dto.response.PaymentResponse;
 import com.aethernet.voicegateway.dto.response.QuoteResponse;
 import com.aethernet.voicegateway.dto.response.SessionResponse;
 import com.aethernet.voicegateway.exception.AddressVerificationException;
 import com.aethernet.voicegateway.exception.DuplicateSessionException;
-import com.aethernet.voicegateway.exception.MerchantNotFoundException;
 import com.aethernet.voicegateway.exception.NoDronesAvailableException;
 import com.aethernet.voicegateway.exception.PaymentProcessingException;
+import com.aethernet.voicegateway.exception.ProviderNotFoundException;
 import com.aethernet.voicegateway.exception.SessionNotFoundException;
 import com.aethernet.voicegateway.model.VoiceSession;
 import com.aethernet.voicegateway.repository.VoiceSessionRepository;
@@ -108,31 +108,31 @@ public class VoiceSessionServiceImpl implements VoiceSessionService {
     }
 
     @Override
-    public MerchantVerificationResponse verifyMerchant(String sessionId, MerchantVerificationRequest request) {
+    public ProviderVerificationResponse verifyProvider(String sessionId, ProviderVerificationRequest request) {
         VoiceSession session = getSessionOrThrow(sessionId);
         validateSessionIsActive(session);
 
-        String merchantName = request.getMerchantName();
-        String merchantId = request.getMerchantId();
+        String providerName = request.getProviderName();
+        String providerId = request.getProviderId();
 
         // Simulacija provere dostupnosti pošiljaoca
-        if ("Nepostojeći Bistro".equalsIgnoreCase(merchantName)) {
-            List<MerchantNotFoundException.AlternativeMerchant> alternatives = List.of(
-                    new MerchantNotFoundException.AlternativeMerchant("merch_456abc", "Bistro Moskva", 0.8),
-                    new MerchantNotFoundException.AlternativeMerchant("merch_123def", "Cafe Drina", 1.2));
+        if ("Nepostojeći Bistro".equalsIgnoreCase(providerName)) {
+            List<ProviderNotFoundException.AlternativeProvider> alternatives = List.of(
+                    new ProviderNotFoundException.AlternativeProvider("prov_456abc", "Bistro Moskva", 0.8),
+                    new ProviderNotFoundException.AlternativeProvider("prov_123def", "Cafe Drina", 1.2));
 
-            throw new MerchantNotFoundException(merchantName, alternatives);
+            throw new ProviderNotFoundException(providerName, alternatives);
         }
 
-        session.markMerchantVerified(merchantId, merchantName);
+        session.markProviderVerified(providerId, providerName);
         voiceSessionRepository.save(session);
 
-        log.info("Merchant verified for session: {} in {} seconds",
-                sessionId, session.getMerchantVerificationDuration());
+        log.info("Provider verified for session: {} in {} seconds",
+                sessionId, session.getProviderVerificationDuration());
 
         // Simulacija uspešne provere
-        return new MerchantVerificationResponse(
-                "merch_789xyz",
+        return new ProviderVerificationResponse(
+                "prov_789xyz",
                 "Bistro Slavija",
                 true,
                 15,

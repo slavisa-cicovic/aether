@@ -3,7 +3,7 @@ import { useVoiceStore } from "@src/state/voiceStore";
 import { voiceAgentService } from "@src/services/voiceAgentService";
 import {
   AddressVerificationRequest,
-  MerchantVerificationRequest,
+  ProviderVerificationRequest,
   QuoteRequest,
   SessionCreateRequest,
 } from "@src/api/types/voice-gateway";
@@ -56,14 +56,14 @@ export function useVoiceAgent() {
     [session, setLastResponse, setStatus]
   );
 
-  const verifyMerchant = useCallback(
-    async (request: MerchantVerificationRequest) => {
+  const verifyProvider = useCallback(
+    async (request: ProviderVerificationRequest) => {
       if (!session) {
         throw new Error("Session is not initialized");
       }
       try {
         setStatus("thinking");
-        const resp = await voiceAgentService.verifyMerchant(
+        const resp = await voiceAgentService.verifyProvider(
           session.sessionId,
           request
         );
@@ -110,7 +110,7 @@ export function useVoiceAgent() {
     // actions
     initSession,
     verifyAddress,
-    verifyMerchant,
+    verifyProvider,
     calculateQuote,
   };
 }

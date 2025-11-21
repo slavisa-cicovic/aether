@@ -64,12 +64,12 @@ public interface VoiceSessionRepository extends JpaRepository<VoiceSession, UUID
            "FROM VoiceSession vs WHERE vs.addressVerifiedAt IS NOT NULL")
     Double getAverageAddressVerificationDuration();
     
-    @Query("SELECT AVG(TIMESTAMPDIFF(SECOND, vs.addressVerifiedAt, vs.merchantVerifiedAt)) " +
-           "FROM VoiceSession vs WHERE vs.addressVerifiedAt IS NOT NULL AND vs.merchantVerifiedAt IS NOT NULL")
-    Double getAverageMerchantVerificationDuration();
+    @Query("SELECT AVG(TIMESTAMPDIFF(SECOND, vs.addressVerifiedAt, vs.providerVerifiedAt)) " +
+           "FROM VoiceSession vs WHERE vs.addressVerifiedAt IS NOT NULL AND vs.providerVerifiedAt IS NOT NULL")
+    Double getAverageProviderVerificationDuration();
     
-    @Query("SELECT AVG(TIMESTAMPDIFF(SECOND, vs.merchantVerifiedAt, vs.quoteCalculatedAt)) " +
-           "FROM VoiceSession vs WHERE vs.merchantVerifiedAt IS NOT NULL AND vs.quoteCalculatedAt IS NOT NULL")
+    @Query("SELECT AVG(TIMESTAMPDIFF(SECOND, vs.providerVerifiedAt, vs.quoteCalculatedAt)) " +
+           "FROM VoiceSession vs WHERE vs.providerVerifiedAt IS NOT NULL AND vs.quoteCalculatedAt IS NOT NULL")
     Double getAverageQuoteCalculationDuration();
     
     @Query("SELECT COUNT(vs) FROM VoiceSession vs WHERE vs.status = :status AND vs.createdAt >= :since")

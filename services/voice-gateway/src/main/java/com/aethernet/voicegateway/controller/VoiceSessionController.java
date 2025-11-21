@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aethernet.voicegateway.dto.request.AddressVerificationRequest;
 import com.aethernet.voicegateway.dto.request.CancelRequest;
-import com.aethernet.voicegateway.dto.request.MerchantVerificationRequest;
+import com.aethernet.voicegateway.dto.request.ProviderVerificationRequest;
 import com.aethernet.voicegateway.dto.request.OrderConfirmationRequest;
 import com.aethernet.voicegateway.dto.request.PaymentRequest;
 import com.aethernet.voicegateway.dto.request.QuoteRequest;
 import com.aethernet.voicegateway.dto.request.SessionCreateRequest;
 import com.aethernet.voicegateway.dto.response.AddressVerificationResponse;
 import com.aethernet.voicegateway.dto.response.ErrorResponse;
-import com.aethernet.voicegateway.dto.response.MerchantVerificationResponse;
+import com.aethernet.voicegateway.dto.response.ProviderVerificationResponse;
 import com.aethernet.voicegateway.dto.response.OrderConfirmationResponse;
 import com.aethernet.voicegateway.dto.response.PaymentResponse;
 import com.aethernet.voicegateway.dto.response.QuoteResponse;
@@ -119,33 +119,33 @@ public class VoiceSessionController {
     }
     
     @Operation(
-        summary = "Verify merchant",
-        description = "Checks if the merchant exists in the database and is available for delivery."
+        summary = "Verify provider",
+        description = "Checks if the provider exists in the database and is available for delivery."
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", 
-            description = "Merchant successfully verified",
-            content = @Content(schema = @Schema(implementation = MerchantVerificationResponse.class))
+            description = "Provider successfully verified",
+            content = @Content(schema = @Schema(implementation = ProviderVerificationResponse.class))
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Merchant not found - suggested alternative merchants",
+            description = "Provider not found - suggested alternative providers",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @PostMapping("/{sessionId}/verify-merchant")
-    public ResponseEntity<?> verifyMerchant(
+    @PostMapping("/{sessionId}/verify-provider")
+    public ResponseEntity<?> verifyProvider(
             @Parameter(description = "Session ID", required = true)
             @PathVariable String sessionId,
             
-            @Parameter(description = "Merchant data and ordered items", required = true)
-            @Valid @RequestBody MerchantVerificationRequest request,
+            @Parameter(description = "Provider data and ordered items", required = true)
+            @Valid @RequestBody ProviderVerificationRequest request,
             
             @Parameter(description = "Unique transaction ID for tracking", required = true)
             @RequestHeader("X-Transaction-ID") String transactionId) {
         
-        MerchantVerificationResponse response = voiceSessionService.verifyMerchant(sessionId, request);
+        ProviderVerificationResponse response = voiceSessionService.verifyProvider(sessionId, request);
         return ResponseEntity.ok(response);
     }
     

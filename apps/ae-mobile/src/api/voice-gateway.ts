@@ -3,8 +3,8 @@ import {
   AddressVerificationResponse,
   HealthCheckQuery,
   HealthCheckResponse,
-  MerchantVerificationRequest,
-  MerchantVerificationResponse,
+  ProviderVerificationRequest,
+  ProviderVerificationResponse,
   SessionCreateRequest,
   SessionResponse,
   QuoteRequest,
@@ -89,10 +89,10 @@ export function useVerifyAddress() {
   };
 }
 
-export function useVerifyMerchant() {
-  const URL = endpoints.voiceGateway.session.verifyMerchant;
+export function useVerifyProvider() {
+  const URL = endpoints.voiceGateway.session.verifyProvider;
   const { data, error, isMutating, trigger, reset } = useSWRMutation(
-    "verify-merchant",
+    "verify-provider",
     async (
       _,
       {
@@ -100,11 +100,11 @@ export function useVerifyMerchant() {
       }: {
         arg: {
           sessionId: string;
-          request: MerchantVerificationRequest;
+          request: ProviderVerificationRequest;
         };
       }
     ) => {
-      return postFetcher<MerchantVerificationResponse>(URL, arg.request, {
+      return postFetcher<ProviderVerificationResponse>(URL, arg.request, {
         urlParams: { sessionId: arg.sessionId },
       });
     }
@@ -114,7 +114,7 @@ export function useVerifyMerchant() {
     verification: data,
     error,
     isVerifying: isMutating,
-    verifyMerchant: trigger,
+    verifyProvider: trigger,
     reset,
   };
 }

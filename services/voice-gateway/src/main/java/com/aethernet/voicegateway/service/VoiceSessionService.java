@@ -7,7 +7,7 @@ import com.aethernet.voicegateway.model.VoiceSession;
 public interface VoiceSessionService {
     SessionResponse createSession(SessionCreateRequest request, String transactionId);
     AddressVerificationResponse verifyAddress(String sessionId, AddressVerificationRequest request);
-    MerchantVerificationResponse verifyMerchant(String sessionId, MerchantVerificationRequest request);
+    ProviderVerificationResponse verifyProvider(String sessionId, ProviderVerificationRequest request);
     QuoteResponse calculateQuote(String sessionId, QuoteRequest request);
     OrderConfirmationResponse confirmOrder(String sessionId, OrderConfirmationRequest request);
     PaymentResponse processPayment(String sessionId, PaymentRequest request);

@@ -5,8 +5,8 @@ import {
   CancelResponse,
   HealthCheckQuery,
   HealthCheckResponse,
-  MerchantVerificationRequest,
-  MerchantVerificationResponse,
+  ProviderVerificationRequest,
+  ProviderVerificationResponse,
   OrderConfirmationRequest,
   OrderConfirmationResponse,
   PaymentRequest,
@@ -51,12 +51,12 @@ export const voiceAgentService = {
     return res.data;
   },
 
-  async verifyMerchant(
+  async verifyProvider(
     sessionId: string,
-    request: MerchantVerificationRequest
-  ): Promise<MerchantVerificationResponse> {
+    request: ProviderVerificationRequest
+  ): Promise<ProviderVerificationResponse> {
     const url = replaceSessionId(
-      endpoints.voiceGateway.session.verifyMerchant,
+      endpoints.voiceGateway.session.verifyProvider,
       sessionId
     );
     const res = await axiosInstance.post(url, request);

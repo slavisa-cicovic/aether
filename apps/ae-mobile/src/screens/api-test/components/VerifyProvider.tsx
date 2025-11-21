@@ -1,30 +1,30 @@
-// src/screens/api-test/components/VerifyMerchant.tsx
+// src/screens/api-test/components/VerifyProvider.tsx
 
 import { View } from "react-native";
 import { useState } from "react";
 import ApiSection from "./ApiSection";
 import AppInput from "@src/components/ui/AppInput";
 import AppButton from "@src/components/ui/AppButton";
-import { useVerifyMerchant } from "@src/api/voice-gateway";
+import { useVerifyProvider } from "@src/api/voice-gateway";
 import { useTheme } from "@src/theme";
 import { useVoiceStore } from "@src/state/voiceStore";
 import { withSession } from "@src/utils/withSession";
 
-export default function VerifyMerchant() {
+export default function VerifyProvider() {
     const { colors, spacing } = useTheme();
 
     const {
         verification,
         isVerifying,
         error,
-        verifyMerchant,
-    } = useVerifyMerchant();
+        verifyProvider,
+    } = useVerifyProvider();
 
     // -------------------------
     // FORM STATE
     // -------------------------
-    const [merchantId, setMerchantId] = useState("m-123");
-    const [merchantName, setMerchantName] = useState("Demo Merchant");
+    const [providerId, setProviderId] = useState("p-123");
+    const [providerName, setProviderName] = useState("Demo Provider");
 
     // Items array
     const [items, setItems] = useState([
@@ -48,11 +48,11 @@ export default function VerifyMerchant() {
 
     const handlePress = withSession(sessionId, (sid) => {
 
-        verifyMerchant({
+        verifyProvider({
             sessionId: sid,
             request: {
-                merchantId,
-                merchantName,
+                providerId,
+                providerName,
                 items,
             },
         })
@@ -61,9 +61,9 @@ export default function VerifyMerchant() {
 
     return (
         <ApiSection
-            title="Verify Merchant"
-            description="Checks merchant availability and prepares order feasibility."
-            buttonLabel={isVerifying ? "Verifying..." : "Verify Merchant"}
+            title="Verify Provider"
+            description="Checks provider availability and prepares order feasibility."
+            buttonLabel={isVerifying ? "Verifying..." : "Verify Provider"}
             loading={isVerifying}
             onPress={handlePress}
             responseCode={
@@ -78,15 +78,15 @@ export default function VerifyMerchant() {
         >
             <View style={{ marginTop: spacing.md }}>
                 <AppInput
-                    label="Merchant ID"
-                    value={merchantId}
-                    onChangeText={setMerchantId}
+                    label="Provider ID"
+                    value={providerId}
+                    onChangeText={setProviderId}
                 />
 
                 <AppInput
-                    label="Merchant Name"
-                    value={merchantName}
-                    onChangeText={setMerchantName}
+                    label="Provider Name"
+                    value={providerName}
+                    onChangeText={setProviderName}
                 />
 
                 {/* Items section */}

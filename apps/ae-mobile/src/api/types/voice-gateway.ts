@@ -43,10 +43,10 @@ export interface AddressVerificationResponse {
   status: "VERIFIED" | "AMBIGUOUS" | "NOT_FOUND";
 }
 
-// ========== MERCHANT VERIFICATION ==========
-export interface MerchantVerificationRequest {
-  merchantId: string;
-  merchantName: string;
+// ========== PROVIDER VERIFICATION ==========
+export interface ProviderVerificationRequest {
+  providerId: string;
+  providerName: string;
   items: OrderItemRequest[];
 }
 
@@ -55,9 +55,9 @@ export interface OrderItemRequest {
   quantity: number;
 }
 
-export interface MerchantVerificationResponse {
-  merchantId: string;
-  merchantName: string;
+export interface ProviderVerificationResponse {
+  providerId: string;
+  providerName: string;
   isAvailable: boolean;
   estimatedPreparationTime: number;
   responseMessage: string;

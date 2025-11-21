@@ -85,14 +85,14 @@ X-Transaction-ID: <uuid_for_tracing>
 
 ---
 
-### **3. API: Merchant Availability Check**
+### **3. API: Provider Availability Check**
 
-* **Endpoint:** `POST /voice/sessions/{session_id}/verify-merchant`
-* **Description:** Checks if the merchant exists in the database and is available for delivery.
+* **Endpoint:** `POST /voice/sessions/{session_id}/verify-provider`
+* **Description:** Checks if the provider exists in the database and is available for delivery.
 * **Request Body:**
 ```json
 {
-  "merchant_name": "Bistro Slavija",
+  "provider_name": "Bistro Slavija",
   "items": [
     {"name": "coffee", "quantity": 2},
     {"name": "ham sandwich", "quantity": 1}
@@ -102,8 +102,8 @@ X-Transaction-ID: <uuid_for_tracing>
 * **Response (200 OK):**
 ```json
 {
-  "merchant_id": "merch_789xyz",
-  "merchant_name": "Bistro Slavija",
+  "provider_id": "prov_789xyz",
+  "provider_name": "Bistro Slavija",
   "is_available": true,
   "estimated_preparation_time": 15,
   "response_message": "Excellent choice. When do you want us to deliver? Immediately or for a certain time?"
@@ -112,11 +112,11 @@ X-Transaction-ID: <uuid_for_tracing>
 * **Error Response (404 Not Found):**
 ```json
 {
-  "error_code": "MERCHANT_NOT_FOUND",
+  "error_code": "PROVIDER_NOT_FOUND",
   "message": "Sorry, 'Bistro Slavija' currently has no drones available. Do you want us to see other bistros near you?",
-  "alternative_merchants": [
-    {"id": "merch_456abc", "name": "Bistro Moskva", "distance_km": 0.8},
-    {"id": "merch_123def", "name": "Cafe Drina", "distance_km": 1.2}
+  "alternative_providers": [
+    {"id": "prov_456abc", "name": "Bistro Moskva", "distance_km": 0.8},
+    {"id": "prov_123def", "name": "Cafe Drina", "distance_km": 1.2}
   ]
 }
 ```
@@ -240,9 +240,9 @@ X-Transaction-ID: <uuid_for_tracing>
      |    verified_address data    |
      |<----------------------------|
      |                             |
-     | POST /verify-merchant       |
+     | POST /verify-provider       |
      |---------------------------->|
-     |   merchant availability     |
+     |   provider availability     |
      |<----------------------------|
      |                             |
      | POST /calculate-quote       |
@@ -308,4 +308,3 @@ See [configuration guide](./docs/configuration.md) for environment setup.
 ```
 
 ## 👥 Team
-

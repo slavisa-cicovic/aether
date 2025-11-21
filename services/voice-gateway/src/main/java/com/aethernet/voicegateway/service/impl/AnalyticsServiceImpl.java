@@ -36,15 +36,15 @@ public class AnalyticsServiceImpl implements AnalyticsService {
             // Average durations
             Double avgSessionDuration = voiceSessionRepository.getAverageSessionDuration();
             Double avgAddressDuration = voiceSessionRepository.getAverageAddressVerificationDuration();
-            Double avgMerchantDuration = voiceSessionRepository.getAverageMerchantVerificationDuration();
+            Double avgProviderDuration = voiceSessionRepository.getAverageProviderVerificationDuration();
             Double avgQuoteDuration = voiceSessionRepository.getAverageQuoteCalculationDuration();
 
             analytics.put("average_session_duration_seconds",
                     avgSessionDuration != null ? Math.round(avgSessionDuration) : 0);
             analytics.put("average_address_verification_seconds",
                     avgAddressDuration != null ? Math.round(avgAddressDuration) : 0);
-            analytics.put("average_merchant_verification_seconds",
-                    avgMerchantDuration != null ? Math.round(avgMerchantDuration) : 0);
+            analytics.put("average_provider_verification_seconds",
+                    avgProviderDuration != null ? Math.round(avgProviderDuration) : 0);
             analytics.put("average_quote_calculation_seconds",
                     avgQuoteDuration != null ? Math.round(avgQuoteDuration) : 0);
 

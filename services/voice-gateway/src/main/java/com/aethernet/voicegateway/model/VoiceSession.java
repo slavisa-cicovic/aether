@@ -68,8 +68,8 @@ public class VoiceSession {
     @Column(name = "address_verified_at")
     private LocalDateTime addressVerifiedAt;
     
-    @Column(name = "merchant_verified_at") 
-    private LocalDateTime merchantVerifiedAt;
+    @Column(name = "provider_verified_at")
+    private LocalDateTime providerVerifiedAt;
     
     @Column(name = "quote_calculated_at")
     private LocalDateTime quoteCalculatedAt;
@@ -90,11 +90,11 @@ public class VoiceSession {
     @Column(name = "order_id", length = 50)
     private String orderId;
     
-    @Column(name = "merchant_id", length = 50)
-    private String merchantId;
+    @Column(name = "provider_id", length = 50)
+    private String providerId;
     
-    @Column(name = "merchant_name", length = 100)
-    private String merchantName;
+    @Column(name = "provider_name", length = 100)
+    private String providerName;
     
     @Column(name = "delivery_address", columnDefinition = "TEXT")
     private String deliveryAddress;
@@ -148,10 +148,10 @@ public class VoiceSession {
         this.updatedAt = LocalDateTime.now();
     }
     
-    public void markMerchantVerified(String merchantId, String merchantName) {
-        this.merchantVerifiedAt = LocalDateTime.now();
-        this.merchantId = merchantId;
-        this.merchantName = merchantName;
+    public void markProviderVerified(String providerId, String providerName) {
+        this.providerVerifiedAt = LocalDateTime.now();
+        this.providerId = providerId;
+        this.providerName = providerName;
         this.updatedAt = LocalDateTime.now();
     }
     
@@ -208,16 +208,16 @@ public class VoiceSession {
         return null;
     }
     
-    public Integer getMerchantVerificationDuration() {
-        if (addressVerifiedAt != null && merchantVerifiedAt != null) {
-            return (int) java.time.Duration.between(addressVerifiedAt, merchantVerifiedAt).getSeconds();
+    public Integer getProviderVerificationDuration() {
+        if (addressVerifiedAt != null && providerVerifiedAt != null) {
+            return (int) java.time.Duration.between(addressVerifiedAt, providerVerifiedAt).getSeconds();
         }
         return null;
     }
     
     public Integer getQuoteCalculationDuration() {
-        if (merchantVerifiedAt != null && quoteCalculatedAt != null) {
-            return (int) java.time.Duration.between(merchantVerifiedAt, quoteCalculatedAt).getSeconds();
+        if (providerVerifiedAt != null && quoteCalculatedAt != null) {
+            return (int) java.time.Duration.between(providerVerifiedAt, quoteCalculatedAt).getSeconds();
         }
         return null;
     }

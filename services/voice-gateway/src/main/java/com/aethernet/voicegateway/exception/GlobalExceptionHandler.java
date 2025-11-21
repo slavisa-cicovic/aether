@@ -51,19 +51,19 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        @ExceptionHandler(MerchantNotFoundException.class)
-        public ResponseEntity<ErrorResponse> handleMerchantNotFound(MerchantNotFoundException ex,
+        @ExceptionHandler(ProviderNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleProviderNotFound(ProviderNotFoundException ex,
                         HttpServletRequest request) {
                 ErrorResponse error = ErrorResponse.builder()
                                 .timestamp(LocalDateTime.now())
                                 .status(HttpStatus.NOT_FOUND.value())
-                                .error("Merchant Not Found")
+                                .error("Provider Not Found")
                                 .message(ex.getMessage())
                                 .path(request.getRequestURI())
-                                .errorCode("MERCHANT_NOT_FOUND")
+                                .errorCode("PROVIDER_NOT_FOUND")
                                 .details(Map.of(
-                                                "merchantName", ex.getMerchantName(),
-                                                "alternative_merchants", ex.getAlternativeMerchants()))
+                                                "providerName", ex.getProviderName(),
+                                                "alternative_providers", ex.getAlternativeProviders()))
                                 .build();
 
                 return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);

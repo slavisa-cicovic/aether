@@ -8,7 +8,7 @@ import ConfirmOrder from "./components/ConfirmOrder";
 import ProcessPayment from "./components/ProcessPayment";
 import SessionCreate from "./components/SessionCreate";
 import VerificationAddress from "./components/VerificationAddress";
-import VerifyMerchant from "./components/VerifyMerchant";
+import VerifyProvider from "./components/VerifyProvider";
 
 export default function ApiTestView() {
     const { data, isLoading, error, refetch } = useHealthCheck({ detailed: true });
@@ -42,7 +42,7 @@ export default function ApiTestView() {
                 <AppCard.Content scroll >
                     <SessionCreate />
                     <VerificationAddress />
-                    <VerifyMerchant />
+                    <VerifyProvider />
                     <CalculateQuote />
                     <ConfirmOrder />
                     <ProcessPayment />
