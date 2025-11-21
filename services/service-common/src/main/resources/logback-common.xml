@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
 
-    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="application" />
-    <springProperty scope="context" name="ROOT_LOG_LEVEL" source="logging.level.root" defaultValue="INFO" />
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"
+        defaultValue="application" />
+    <springProperty scope="context" name="ROOT_LOG_LEVEL" source="logging.level.root"
+        defaultValue="INFO" />
     <springProperty scope="context" name="CONSOLE_PATTERN"
         source="logging.pattern.console"
         defaultValue="%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr([%thread]){magenta} %highlight(%-5level) %clr(%logger{36}){cyan} - [%file:%line] - %msg%n" />
@@ -27,12 +29,12 @@
     </appender>
 
     <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_FILE}</file>
+        <!-- <file>${LOG_FILE}</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_ARCHIVE_PATTERN}</fileNamePattern>
             <maxHistory>30</maxHistory>
-        </rollingPolicy>
+        </rollingPolicy> -->
 
         <encoder>
             <pattern>${FILE_PATTERN}</pattern>
