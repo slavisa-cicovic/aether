@@ -12,3 +12,6 @@ logging:
   config: classpath:logback-common.xml
   level:
     root: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer: ERROR
+    com.aethernet: DEBUG
