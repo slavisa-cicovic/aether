@@ -9,7 +9,8 @@ import {
 } from "react";
 import { LoginSchema } from "@/lib/validation/auth";
 import { loginRequest, logoutRequest, UserDto } from "@/lib/api/auth";
-import { setAuthToken } from "@/lib/api/client";
+import { axiosClient, setAuthToken } from "@/lib/api/client";
+import { setUserAuthToken } from "@/utils/userAxios";
 
 interface AuthContextValue {
   user: UserDto | null;
@@ -32,6 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (stored) {
       setToken(stored);
       setAuthToken(stored);
+      setUserAuthToken(stored);
     }
   }, []);
 
@@ -39,11 +41,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!token || user) return;
 
     (async () => {
-      const res = await fetch("/api/auth/profile");
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
-      }
+      const res = await axiosClient.get("/auth/profile");
+      setUser(res.data.user);
     })();
   }, [token, user]);
 
@@ -53,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(response.user);
     setToken(response.accessToken);
     setAuthToken(response.accessToken);
+    setUserAuthToken(response.accessToken);
     sessionStorage.setItem(TOKEN_STORAGE_KEY, response.accessToken);
   }, []);
 
@@ -61,6 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setToken(null);
     setAuthToken(null);
+    setUserAuthToken(null);
     sessionStorage.removeItem(TOKEN_STORAGE_KEY);
     window.location.href = "/login";
   }, []);

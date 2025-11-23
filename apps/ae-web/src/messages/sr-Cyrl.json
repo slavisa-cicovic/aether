@@ -12,6 +12,7 @@
     }
   },
   "nav": {
+    "users": "Корисници",
     "dashboard": "Контролна табла",
     "settings": "Подешавања"
   },
@@ -61,6 +62,25 @@
     "validation": {
       "email": "Унеси исправну email адресу",
       "passwordLength": "Лозинка мора имати најмање 6 карактера"
+    }
+  },
+  "user": {
+    "listTitle": "Корисници",
+    "create": "Нови корисник",
+    "table": {
+      "firstName": "Име",
+      "lastName": "Презиме",
+      "email": "Email",
+      "lang": "Језик",
+      "active": "Активан",
+      "inactive": "Неактиван",
+      "locked": "Закључан",
+      "unlocked": "Откључан",
+      "actions": "Акције",
+      "edit": "Измени",
+      "delete": "Обриши",
+      "resendInvite": "Понови позив",
+      "noData": "Нема корисника"
     }
   }
 }

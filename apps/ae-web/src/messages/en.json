@@ -12,7 +12,7 @@
     }
   },
   "table": {
-    "table_pagination_custom_t": {
+    "table_pagination_custom": {
       "dense": "Dense"
     },
     "selected_action": {
@@ -73,6 +73,22 @@
     }
   },
   "user": {
-    "create": "New user"
+    "listTitle": "Users",
+    "create": "New user",
+    "table": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "lang": "Language",
+      "active": "Active",
+      "inactive": "Inactive",
+      "locked": "Locked",
+      "unlocked": "Unlocked",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "resendInvite": "Resend invite",
+      "noData": "No users found"
+    }
   }
 }

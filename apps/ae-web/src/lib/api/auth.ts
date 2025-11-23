@@ -1,4 +1,5 @@
 import { LoginSchema } from "@/lib/validation/auth";
+import userAxiosInstance from "@/utils/userAxios";
 
 export interface UserDto {
   id: number;
@@ -16,22 +17,25 @@ export interface LoginResponse {
 export async function loginRequest(
   payload: LoginSchema
 ): Promise<LoginResponse> {
-  const res = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({}));
-    throw new Error(error?.message ?? "LOGIN_ERROR");
+  try {
+    const res = await userAxiosInstance.post<LoginResponse>(
+      "/api/auth/login",
+      payload
+    );
+    return res.data;
+  } catch (err: any) {
+    const message =
+      typeof err === "string"
+        ? err
+        : typeof err?.message === "string"
+        ? err.message
+        : "LOGIN_ERROR";
+    throw new Error(message);
   }
-
-  return res.json();
 }
 
 export async function logoutRequest(): Promise<void> {
   await fetch("/api/auth/logout", {
-    method: "POST"
+    method: "POST",
   });
 }
