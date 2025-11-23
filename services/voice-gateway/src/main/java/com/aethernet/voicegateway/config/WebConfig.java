@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.aethernet.common.cors.CorsProperties;
 import com.aethernet.voicegateway.config.converters.CancelReasonConverter;
 import com.aethernet.voicegateway.config.converters.DeliveryTimeTypeConverter;
 import com.aethernet.voicegateway.config.converters.PaymentMethodConverter;

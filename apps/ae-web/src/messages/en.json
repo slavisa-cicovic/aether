@@ -11,7 +11,16 @@
       "sr-Cyrl": "Српски (ћирилица)"
     }
   },
+  "table": {
+    "table_pagination_custom_t": {
+      "dense": "Dense"
+    },
+    "selected_action": {
+      "selected": "Selected"
+    }
+  },
   "nav": {
+    "users": "Users",
     "dashboard": "Dashboard",
     "settings": "Settings"
   },
@@ -62,5 +71,8 @@
       "email": "Enter a valid email",
       "passwordLength": "Password must be at least 6 characters"
     }
+  },
+  "user": {
+    "create": "New user"
   }
 }

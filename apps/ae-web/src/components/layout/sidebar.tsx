@@ -11,6 +11,7 @@ export function Sidebar() {
   const tCommon = useTranslations("common");
   const navItems = [
     { href: "/dashboard", label: tNav("dashboard") },
+    { href: "/user", label: tNav("users") },
     { href: "/settings", label: tNav("settings") }
   ];
 

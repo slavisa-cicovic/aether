@@ -1,22 +1,19 @@
-package com.aethernet.voicegateway.config;
+package com.aethernet.common.cors;
 
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@Component
 @ConfigurationProperties(prefix = "app.cors")
 public class CorsProperties {
-    
+
     private List<String> allowedOrigins;
     private List<String> allowedMethods = List.of("GET", "POST", "PUT", "DELETE", "OPTIONS");
     private List<String> allowedHeaders = List.of("*");
-    private List<String> exposedHeaders = List.of("X-Transaction-ID", "X-Session-ID", "X-Request-ID");
+    private List<String> exposedHeaders = List.of();
     private boolean allowCredentials = true;
     private long maxAge = 3600L;
 
-    // Getters and Setters
     public List<String> getAllowedOrigins() {
         return allowedOrigins;
     }
