@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableAsync
-public class AetherVoiceGatewayApplication {
+public class VoiceGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AetherVoiceGatewayApplication.class, args);
+        SpringApplication.run(VoiceGatewayApplication.class, args);
     }
 }
