@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.aethernet.common.cors.CorsConfig;
+import com.aethernet.common.health.HealthConfiguration;
 import com.aethernet.voicegateway.config.AuthProperties.AuthMode;
 import com.aethernet.voicegateway.config.filters.ConfigurableAuthFilter;
 import com.aethernet.voicegateway.security.JwtAuthenticationFilter;
@@ -20,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Import(CorsConfig.class)
+@Import({ CorsConfig.class, HealthConfiguration.class })
 public class SecurityConfig {
 
         private final AuthProperties authProperties;

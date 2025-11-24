@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.aethernet.common.cors.CorsConfig;
+import com.aethernet.common.health.HealthConfiguration;
 import com.aethernet.user.service.security.CustomUserDetailsService;
 import com.aethernet.user.service.security.JwtAuthenticationFilter;
 
@@ -23,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-@Import(CorsConfig.class)
+@Import({ CorsConfig.class, HealthConfiguration.class })
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
@@ -55,6 +56,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/health",
+                                "/info",
+                                "/actuator/health",
                                 "/api/auth/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**")
