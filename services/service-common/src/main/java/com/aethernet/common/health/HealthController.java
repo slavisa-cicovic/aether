@@ -28,10 +28,8 @@ public class HealthController {
         this.serviceDescription = serviceDescription;
     }
 
-    @Operation(
-            summary = "Health check",
-            description = "Checks if the service is running and responsive. Does not require authentication.")
-    @GetMapping("/health")
+    @Operation(summary = "Health check", description = "Checks if the service is running and responsive. Does not require authentication.")
+    @GetMapping("/v1/health")
     public Map<String, Object> health() {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("status", "UP");
@@ -40,10 +38,8 @@ public class HealthController {
         return payload;
     }
 
-    @Operation(
-            summary = "Service info",
-            description = "Returns basic information about the service. Does not require authentication.")
-    @GetMapping("/info")
+    @Operation(summary = "Service info", description = "Returns basic information about the service. Does not require authentication.")
+    @GetMapping("/v1/info")
     public Map<String, Object> info() {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("name", serviceName);

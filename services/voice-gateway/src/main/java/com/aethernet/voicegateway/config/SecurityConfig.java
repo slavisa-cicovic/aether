@@ -38,14 +38,16 @@ public class SecurityConfig {
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authorizeHttpRequests(authz -> authz
                                                 .requestMatchers(
-                                                "/health",
-                                                "/info",
-                                                "/actuator/health",
-                                                "/swagger-ui.html",
-                                                "/swagger-ui/**",
-                                                "/swagger-ui/index.html",
-                                                "/api-docs",
-                                                "/api-docs/**",
+                                                                "/health",
+                                                                "/info",
+                                                                "/v1/health",
+                                                                "/v1/info",
+                                                                "/actuator/health",
+                                                                "/swagger-ui.html",
+                                                                "/swagger-ui/**",
+                                                                "/swagger-ui/index.html",
+                                                                "/api-docs",
+                                                                "/api-docs/**",
                                                                 "/webjars/**",
                                                                 "/swagger-resources/**",
                                                                 "/configuration/**",
@@ -54,8 +56,7 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers("/analytics/**").hasRole("ADMIN")
                                                 .requestMatchers("/v1/voice/sessions/**").hasRole("VOICE_AGENT")
-                                                .anyRequest().authenticated()
-                                );
+                                                .anyRequest().authenticated());
 
                 if (authProperties.getMode() == AuthMode.DUMMY) {
                         http.addFilterBefore(configurableAuthFilter, UsernamePasswordAuthenticationFilter.class);
