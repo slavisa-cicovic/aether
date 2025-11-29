@@ -1,5 +1,11 @@
 import { cookies, headers } from "next/headers";
-import { defaultLocale, localeCookieName, locales, pickLocale } from "./index";
+import {
+  defaultLocale,
+  getMessages,
+  localeCookieName,
+  locales,
+  pickLocale
+} from "./index";
 
 export default async function getRequestConfig() {
   const cookieStore = await cookies();
@@ -13,6 +19,7 @@ export default async function getRequestConfig() {
   return {
     locales,
     defaultLocale,
-    locale
+    locale,
+    messages: await getMessages(locale)
   };
 }

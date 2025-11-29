@@ -64,6 +64,66 @@
       "passwordLength": "Lozinka mora imati najmanje 6 karaktera"
     }
   },
+  "landing": {
+    "headerTag": "Kontrolna konzola",
+    "headerLogin": "Prijava",
+    "tagline": "Spremnost operacija",
+    "title": "Orkestriraj svaku Aether misiju iz jedne konzole.",
+    "description": "Upravljaj flotama, usklađuj operatere i ostani u skladu u realnom vremenu uz kontrolnu sobu za mešovite timove.",
+    "primaryCta": "Otvori konzolu",
+    "secondaryCta": "Pogledaj mogućnosti",
+    "stats": {
+      "uptime": {
+        "label": "Dostupnost platforme",
+        "value": "99.98%"
+      },
+      "deploys": {
+        "label": "Izdanja mesečno",
+        "value": "120+"
+      },
+      "coverage": {
+        "label": "Podržanih regiona",
+        "value": "14"
+      }
+    },
+    "panel": {
+      "title": "Spremno za live ops",
+      "heading": "Precizna kontrola, bez nagađanja.",
+      "items": {
+        "automation": {
+          "title": "Automatizacija koja stabilizuje flotu",
+          "description": "Plejbuk hvata incidente, usmerava operatere i rešava buku pre nego što te uspori."
+        },
+        "security": {
+          "title": "Sigurnost po podrazumevanoj postavci",
+          "description": "Pristup po ulogama, istorija spremna za reviziju i izolacija okruženja za svaku prijavu."
+        },
+        "localization": {
+          "title": "Lokalizovano za svaki tim",
+          "description": "Interfejs i notifikacije po jeziku da mešovite ekipe dobiju instrukcije kojima veruju."
+        }
+      },
+      "footer": "Pravljeno da operateri misle na misije, ne na alat."
+    },
+    "features": {
+      "kicker": "Šta dobijaš prvog dana",
+      "title": "Konzola podešena za rad u realnom vremenu",
+      "subtitle": "Vidljivost, upravljanje i automatizacija na jednoj čistoj površini.",
+      "caption": "Spremno za deploy",
+      "visibility": {
+        "title": "Vidljivost uživo",
+        "description": "Dashboardi puni telemetrije sa ažuriranjima niske latencije i alertima prilagođenim ops timovima."
+      },
+      "security": {
+        "title": "Poverenje bez trenja",
+        "description": "Zero-trust pristup, autentikacija spremna za SSO i reviziono logovanje koje prolazi kontrole."
+      },
+      "workflow": {
+        "title": "Tok koji se prilagođava",
+        "description": "Podesivi tokovi, dvojezične notifikacije i odobravanja koja prate tvoj plejbuk."
+      }
+    }
+  },
   "user": {
     "listTitle": "Korisnici",
     "create": "Novi korisnik",

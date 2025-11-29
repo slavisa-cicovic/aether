@@ -11,10 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.aethernet.user.domain.Role;
 import com.aethernet.user.domain.User;
 import com.aethernet.user.dto.request.RegisterUserRequest;
 import com.aethernet.user.dto.request.UpdateUserRequest;
 import com.aethernet.user.dto.response.UserResponse;
+import com.aethernet.user.repository.RoleRepository;
 import com.aethernet.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import org.springframework.util.StringUtils;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     public List<UserResponse> getAllUsers() {
@@ -55,6 +58,7 @@ public class UserService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .lang(resolveLang(request.getLang()))
+                .roles(Set.of(resolveUserRole()))
                 .active(true)
                 .locked(false)
                 .deleted(false)
@@ -109,6 +113,12 @@ public class UserService {
                 .stream()
                 .map(role -> role.getName())
                 .collect(java.util.stream.Collectors.toSet());
+    }
+
+    private Role resolveUserRole() {
+        return roleRepository.findByName("USER")
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR, "Default USER role is missing"));
     }
 
     private String resolveLang(String lang) {

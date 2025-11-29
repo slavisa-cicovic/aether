@@ -38,14 +38,14 @@ public class SecurityConfig {
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authorizeHttpRequests(authz -> authz
                                                 .requestMatchers(
-                                                                "/health",
-                                                                "/info",
-                                                                "/actuator/health",
-                                                                "/swagger-ui.html",
-                                                                "/swagger-ui/**",
-                                                                "/swagger-ui/index.html",
-                                                                "/api-docs",
-                                                                "/api-docs/**",
+                                                "/health",
+                                                "/info",
+                                                "/actuator/health",
+                                                "/swagger-ui.html",
+                                                "/swagger-ui/**",
+                                                "/swagger-ui/index.html",
+                                                "/api-docs",
+                                                "/api-docs/**",
                                                                 "/webjars/**",
                                                                 "/swagger-resources/**",
                                                                 "/configuration/**",

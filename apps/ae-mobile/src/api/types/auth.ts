@@ -5,6 +5,14 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface RegisterPayload {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  lang?: string;
+}
+
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;

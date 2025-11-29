@@ -28,7 +28,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (!hydrated) return;
 
-    const inAuthRoute = segments[0] === "login";
+    const inAuthRoute = segments[0] === "login" || segments[0] === "register";
 
     if (!accessToken && !inAuthRoute) {
       router.replace("/login");
@@ -49,6 +49,7 @@ export default function RootLayout() {
         <>
           <Stack>
             <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Screen name="register" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="modal"

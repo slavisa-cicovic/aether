@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -133,6 +134,15 @@ export default function LoginScreen() {
                 style={{ marginTop: spacing.md }}
               />
             )}
+
+            <TouchableOpacity
+              onPress={() => router.push("/register")}
+              style={{ marginTop: spacing.lg, alignItems: "center" }}
+            >
+              <AppText variant="bodyMedium" style={{ color: colors.primary }}>
+                Don&apos;t have an account? Register
+              </AppText>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

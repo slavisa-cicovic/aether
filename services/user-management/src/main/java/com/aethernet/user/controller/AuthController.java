@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aethernet.user.domain.User;
 import com.aethernet.user.dto.request.LoginRequest;
+import com.aethernet.user.dto.request.RegisterUserRequest;
 import com.aethernet.user.dto.request.RefreshTokenRequest;
 import com.aethernet.user.dto.response.LoginResponse;
 import com.aethernet.user.dto.response.UserResponse;
@@ -38,6 +39,15 @@ public class AuthController {
 
         LoginResponse login = authService.login(request);
         return ResponseEntity.ok(login);
+    }
+
+    // =========================================================================
+    // REGISTER
+    // =========================================================================
+    @PostMapping("/register")
+    public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterUserRequest request) {
+        LoginResponse register = authService.register(request);
+        return ResponseEntity.ok(register);
     }
 
     // =========================================================================

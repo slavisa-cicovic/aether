@@ -72,6 +72,66 @@
       "passwordLength": "Password must be at least 6 characters"
     }
   },
+  "landing": {
+    "headerTag": "Mission console",
+    "headerLogin": "Log in",
+    "tagline": "Operational readiness",
+    "title": "Orchestrate every Aether mission from one console.",
+    "description": "Direct fleets, coordinate operators, and stay compliant in real time with a control room built for mixed crews.",
+    "primaryCta": "Open console",
+    "secondaryCta": "See capabilities",
+    "stats": {
+      "uptime": {
+        "label": "Platform uptime",
+        "value": "99.98%"
+      },
+      "deploys": {
+        "label": "Deploys each month",
+        "value": "120+"
+      },
+      "coverage": {
+        "label": "Regions supported",
+        "value": "14"
+      }
+    },
+    "panel": {
+      "title": "Live ops ready",
+      "heading": "Precision control, zero guesswork.",
+      "items": {
+        "automation": {
+          "title": "Automation that steadies the fleet",
+          "description": "Playbooks catch incidents, route operators, and resolve the noise before it slows you down."
+        },
+        "security": {
+          "title": "Secure by default",
+          "description": "Role-based access, audit-ready history, and environment isolation for every login."
+        },
+        "localization": {
+          "title": "Localized for every team",
+          "description": "Language-aware UI and notifications so mixed crews get instructions they trust."
+        }
+      },
+      "footer": "Built to keep operators focused on missions, not tooling."
+    },
+    "features": {
+      "kicker": "What you get on day one",
+      "title": "A console tuned for live operations",
+      "subtitle": "Visibility, governance, and automation combined in one clear surface.",
+      "caption": "Ready for deployment",
+      "visibility": {
+        "title": "Live visibility",
+        "description": "Telemetry-rich dashboards with latency-aware updates and alerting tuned for operations teams."
+      },
+      "security": {
+        "title": "Trust without friction",
+        "description": "Zero-trust access, SSO-friendly authentication, and audit logging that meets compliance reviews."
+      },
+      "workflow": {
+        "title": "Flow that adapts",
+        "description": "Configurable workflows, bilingual notifications, and approvals that match your playbooks."
+      }
+    }
+  },
   "user": {
     "listTitle": "Users",
     "create": "New user",

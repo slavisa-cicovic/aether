@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { AuthResponse, LoginCredentials } from "@src/api/types/auth";
+import { AuthResponse, LoginCredentials, RegisterPayload } from "@src/api/types/auth";
 import { User } from "@src/api/types/user";
 import { USER_MANAGEMENT_API_BASE_URL } from "@src/constants/config";
 import userManagementClient from "@src/utils/userManagementClient";
@@ -45,6 +45,12 @@ export const authService = {
     }
 
     const data = await request<AuthResponse>("/api/auth/login", credentials);
+    await persistAuthData(data);
+    return data;
+  },
+
+  async register(payload: RegisterPayload): Promise<AuthResponse> {
+    const data = await request<AuthResponse>("/api/auth/register", payload);
     await persistAuthData(data);
     return data;
   },

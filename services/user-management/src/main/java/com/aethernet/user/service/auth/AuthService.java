@@ -1,6 +1,9 @@
 package com.aethernet.user.service.auth;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
@@ -9,15 +12,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.aethernet.user.domain.RefreshToken;
+import com.aethernet.user.domain.Role;
 import com.aethernet.user.domain.User;
 import com.aethernet.user.dto.request.LoginRequest;
 import com.aethernet.user.dto.request.RefreshTokenRequest;
+import com.aethernet.user.dto.request.RegisterUserRequest;
 import com.aethernet.user.dto.response.LoginResponse;
 import com.aethernet.user.dto.response.UserResponse;
 import com.aethernet.user.repository.RefreshTokenRepository;
+import com.aethernet.user.repository.RoleRepository;
 import com.aethernet.user.repository.UserRepository;
 import com.aethernet.user.service.security.JwtService;
 import com.aethernet.user.service.security.UserPrincipal;
@@ -26,10 +33,12 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class AuthService {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -54,6 +63,44 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()));
+
+        String accessToken = jwtService.generateToken(new UserPrincipal(user));
+        String refreshToken = createRefreshToken(user);
+
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .user(toUserResponse(user))
+                .build();
+    }
+
+    // =========================================================================
+    // REGISTER
+    // =========================================================================
+
+    public LoginResponse register(RegisterUserRequest request) {
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already in use");
+        }
+
+        Role userRole = roleRepository.findByName("USER")
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR, "Default USER role is missing"));
+
+        User user = User.builder()
+                .email(request.getEmail())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .lang(resolveLang(request.getLang()))
+                .roles(Set.of(userRole))
+                .active(true)
+                .locked(false)
+                .deleted(false)
+                .build();
+
+        userRepository.save(user);
 
         String accessToken = jwtService.generateToken(new UserPrincipal(user));
         String refreshToken = createRefreshToken(user);
@@ -126,7 +173,6 @@ public class AuthService {
     // INTERNAL HELPERS
     // =========================================================================
 
-    @SuppressWarnings("null")
     private String createRefreshToken(@NonNull User user) {
 
         RefreshToken token = RefreshToken.builder()
@@ -150,11 +196,19 @@ public class AuthService {
                 .lang(user.getLang())
                 .active(user.isActive())
                 .locked(user.isLocked())
-                .roles(
-                        user.getRoles()
-                                .stream()
-                                .map(role -> role.getName())
-                                .collect(java.util.stream.Collectors.toSet()))
+                .roles(toRoleNames(user))
                 .build();
+    }
+
+    private Set<String> toRoleNames(User user) {
+        return Optional.ofNullable(user.getRoles())
+                .orElseGet(Collections::emptySet)
+                .stream()
+                .map(role -> role.getName())
+                .collect(java.util.stream.Collectors.toSet());
+    }
+
+    private String resolveLang(String lang) {
+        return StringUtils.hasText(lang) ? lang : "en";
     }
 }
