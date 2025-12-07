@@ -65,7 +65,7 @@ export interface ProviderVerificationResponse {
 // ========== CALCULATE QUOTA ==========
 export interface QuoteRequest {
   deliveryTimeType: DeliveryTimeType;
-  scheduledTime?: string; // ISO string format: "2024-01-15T14:30:00Z"
+  scheduledTime?: string; // ISO 8601 UTC string, e.g. "2024-01-15T14:30:00.000Z"
 }
 
 export enum DeliveryTimeType {
