@@ -84,7 +84,7 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already in use");
         }
 
-        Role userRole = roleRepository.findByName("USER")
+        Role userRole = roleRepository.findByName("VOICE_AGENT")
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR, "Default USER role is missing"));
 
