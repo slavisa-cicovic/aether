@@ -1,6 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { AuthResponse, LoginCredentials, RegisterPayload } from "@src/api/types/auth";
+import {
+  AuthResponse,
+  ForgotPasswordPayload,
+  ForgotPasswordResponse,
+  LoginCredentials,
+  RegisterPayload,
+  ResetPasswordPayload,
+} from "@src/api/types/auth";
 import { User } from "@src/api/types/user";
 import { USER_MANAGEMENT_API_BASE_URL } from "@src/constants/config";
 import userManagementClient from "@src/utils/userManagementClient";
@@ -98,5 +105,19 @@ export const authService = {
   async isAuthenticated(): Promise<boolean> {
     const token = await this.getToken();
     return Boolean(token);
+  },
+
+  async requestPasswordReset(payload: ForgotPasswordPayload): Promise<ForgotPasswordResponse> {
+    if (!payload.email) {
+      throw new Error("Email is required");
+    }
+    return request<ForgotPasswordResponse>("/api/auth/forgot-password", payload);
+  },
+
+  async resetPassword(payload: ResetPasswordPayload): Promise<void> {
+    if (!payload.email || !payload.token || !payload.newPassword) {
+      throw new Error("Email, token and new password are required");
+    }
+    await request<void>("/api/auth/reset-password", payload);
   },
 };

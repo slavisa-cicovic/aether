@@ -109,6 +109,15 @@ export default function LoginScreen() {
               autoCapitalize="none"
             />
 
+            <TouchableOpacity
+              onPress={() => router.push("/forgot-password")}
+              style={{ marginTop: spacing.xs, alignItems: "flex-end" }}
+            >
+              <AppText variant="bodySmall" style={{ color: colors.primary }}>
+                Forgot password?
+              </AppText>
+            </TouchableOpacity>
+
             {(formError || error) && (
               <AppText
                 variant="bodySmall"

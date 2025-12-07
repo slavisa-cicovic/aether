@@ -2,8 +2,10 @@ package com.aethernet.user.service.auth;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
@@ -12,17 +14,23 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.aethernet.user.domain.PasswordResetToken;
 import com.aethernet.user.domain.RefreshToken;
 import com.aethernet.user.domain.Role;
 import com.aethernet.user.domain.User;
+import com.aethernet.user.dto.request.ForgotPasswordRequest;
 import com.aethernet.user.dto.request.LoginRequest;
 import com.aethernet.user.dto.request.RefreshTokenRequest;
 import com.aethernet.user.dto.request.RegisterUserRequest;
+import com.aethernet.user.dto.request.ResetPasswordRequest;
+import com.aethernet.user.dto.response.ForgotPasswordResponse;
 import com.aethernet.user.dto.response.LoginResponse;
 import com.aethernet.user.dto.response.UserResponse;
+import com.aethernet.user.repository.PasswordResetTokenRepository;
 import com.aethernet.user.repository.RefreshTokenRepository;
 import com.aethernet.user.repository.RoleRepository;
 import com.aethernet.user.repository.UserRepository;
@@ -38,6 +46,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -150,6 +159,75 @@ public class AuthService {
             token.setRevoked(true);
             refreshTokenRepository.save(token);
         });
+    }
+
+    // =========================================================================
+    // FORGOT / RESET PASSWORD
+    // =========================================================================
+
+    @Transactional
+    public ForgotPasswordResponse initiatePasswordReset(ForgotPasswordRequest request) {
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail())
+                .filter(u -> !u.isDeleted() && u.isActive() && !u.isLocked());
+
+        if (userOpt.isEmpty()) {
+            // Don't leak user existence
+            return ForgotPasswordResponse.builder()
+                    .message("If the account exists, a reset link has been sent.")
+                    .build();
+        }
+
+        User user = userOpt.get();
+        LocalDateTime now = LocalDateTime.now();
+
+        List<PasswordResetToken> activeTokens = passwordResetTokenRepository
+                .findAllByUserAndUsedFalseAndExpiresAtAfter(user, now);
+        activeTokens.forEach(existing -> {
+            existing.setUsed(true);
+            existing.setUsedAt(now);
+        });
+        passwordResetTokenRepository.saveAll(activeTokens);
+
+        PasswordResetToken token = PasswordResetToken.builder()
+                .token(UUID.randomUUID().toString())
+                .user(user)
+                .expiresAt(now.plusMinutes(30))
+                .build();
+
+        passwordResetTokenRepository.save(token);
+
+        return ForgotPasswordResponse.builder()
+                .message("If the account exists, a reset link has been sent.")
+                // Expose token so mobile clients can complete the flow without email wiring.
+                .resetToken(token.getToken())
+                .build();
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        PasswordResetToken token = passwordResetTokenRepository
+                .findByTokenAndUsedFalseAndExpiresAtAfter(request.getToken(), LocalDateTime.now())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid or expired reset token"));
+
+        User user = token.getUser();
+        if (!user.getEmail().equalsIgnoreCase(request.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid reset token for email");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        user.setLocked(false);
+        user.setDeleted(false);
+
+        token.setUsed(true);
+        token.setUsedAt(LocalDateTime.now());
+
+        // revoke existing refresh tokens after password change
+        List<RefreshToken> activeTokens = refreshTokenRepository.findAllByUserAndRevokedFalse(user);
+        activeTokens.forEach(rt -> rt.setRevoked(true));
+        refreshTokenRepository.saveAll(activeTokens);
+
+        userRepository.save(user);
+        passwordResetTokenRepository.save(token);
     }
 
     // =========================================================================

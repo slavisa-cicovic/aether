@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aethernet.user.domain.User;
+import com.aethernet.user.dto.request.ForgotPasswordRequest;
 import com.aethernet.user.dto.request.LoginRequest;
 import com.aethernet.user.dto.request.RegisterUserRequest;
 import com.aethernet.user.dto.request.RefreshTokenRequest;
+import com.aethernet.user.dto.request.ResetPasswordRequest;
+import com.aethernet.user.dto.response.ForgotPasswordResponse;
 import com.aethernet.user.dto.response.LoginResponse;
 import com.aethernet.user.dto.response.UserResponse;
 import com.aethernet.user.service.auth.AuthService;
@@ -64,6 +67,22 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenRequest request) {
         authService.logout(request.getRefreshToken());
+        return ResponseEntity.ok().build();
+    }
+
+    // =========================================================================
+    // FORGOT / RESET PASSWORD
+    // =========================================================================
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ForgotPasswordResponse> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request) {
+        ForgotPasswordResponse response = authService.initiatePasswordReset(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
         return ResponseEntity.ok().build();
     }
 
