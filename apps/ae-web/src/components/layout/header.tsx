@@ -9,7 +9,12 @@ export function Header() {
   const t = useTranslations("common");
 
   return (
-    <AppBar position="sticky" color="default" elevation={0}>
+    <AppBar
+      position="sticky"
+      color="default"
+      elevation={1}
+      className="border-b border-slate-50 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/60"
+    >
       <Toolbar className="flex justify-between">
         <Typography variant="h6" fontWeight="bold">
           {t("brand")}
